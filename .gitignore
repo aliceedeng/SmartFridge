@@ -62,3 +62,12 @@ typings/
 
 # pickle data files
 *.pkl
+
+# custom
+package-lock.json
+
+/.idea
+.env
+/dist
+
+npm-debug.log
