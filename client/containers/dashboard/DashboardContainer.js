@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 // Import custom components
 import Dashboard from '../../components/dashboard/Dashboard';
+import Header from '../../components/common/header/Header';
 
 class DashboardContainer extends Component {
 
@@ -13,7 +14,8 @@ class DashboardContainer extends Component {
 
     render() {
         return (
-            <Dashboard/>
+            	<Dashboard/>
+         
         )
     }
 

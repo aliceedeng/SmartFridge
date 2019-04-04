@@ -11,7 +11,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 
-import * as authService from '../../../services/authService';
+//import * as authService from '../../../services/authService';
 
 const drawerWidth = 250;
 
@@ -45,10 +45,11 @@ const styles = theme => ({
 
 class Header extends Component {
 
+    /*
     logOut(e) {
         e.preventDefault();
         this.props.actions.logout();
-    }
+    }*/
 
     render() {
         const {classes, navDrawerOpen, handleToggleDrawer} = this.props;

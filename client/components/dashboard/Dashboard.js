@@ -5,6 +5,7 @@ import {AddShoppingCart, ThumbUp, Assessment, Face} from '@material-ui/icons';
 
 import SummaryBox from './SummaryBox';
 import Product from './Product';
+import Header from '../common/header/Header';
 
 const data = {
     recentProducts: [
@@ -18,6 +19,7 @@ const data = {
 const Dashboard = () => {
 
     return (
+        
         <div>
             <h2 style={{paddingBottom: '15px'}}>Dashboard</h2>
 
