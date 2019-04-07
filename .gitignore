@@ -59,3 +59,16 @@ typings/
 
 # next.js build output
 .next
+
+# pickle data files
+*.pkl
+*.json
+
+# custom
+package-lock.json
+
+/.idea
+.env
+/dist
+
+npm-debug.log
