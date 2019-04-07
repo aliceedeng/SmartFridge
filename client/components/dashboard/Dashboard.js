@@ -16,12 +16,7 @@ const data = {
     ]
 };
 
-const Dashboard = () => {
-
-    return (
-        
-        <div>
-            <h2 style={{paddingBottom: '15px'}}>Dashboard</h2>
+/*
 
             <Grid container spacing={24}>
                 <Grid item xs>
@@ -63,6 +58,14 @@ const Dashboard = () => {
                     <Product data={data.recentProducts}/>
                 </Grid>
             </Grid>
+*/
+
+const Dashboard = () => {
+
+    return (
+        
+        <div>
+
 
         </div>
     );

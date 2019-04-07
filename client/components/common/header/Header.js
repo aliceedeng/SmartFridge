@@ -15,6 +15,14 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 const drawerWidth = 250;
 
+const buttonStyle = {
+    backgroundColor: 'transparent',
+    border: 'None',
+    color: 'White',
+    size: '30 px'
+}
+
+
 const styles = theme => ({
     appBar: {
         position: 'absolute',
@@ -58,14 +66,11 @@ class Header extends Component {
             <div>
                 <AppBar className={classNames(classes.appBar, navDrawerOpen && classes.appBarShift)}>
                     <Toolbar>
-                        <IconButton aria-label="Menu" onClick={handleToggleDrawer}
-                                    className={classNames(!navDrawerOpen && classes.menuButton, navDrawerOpen && classes.menuButtonShift)}>
-                            <MenuIcon />
-                        </IconButton>
-                        <Typography type="title" color="inherit" className={classes.flex}>
+                        <button style={buttonStyle}>search by recipe</button>
+                        <Typography type="title" className={classes.flex}>
 
                         </Typography>
-                        <Button onClick={this.logOut.bind(this)}>Logout</Button>
+                        <button style={buttonStyle}>search by ingredient(s)</button>
                     </Toolbar>
                 </AppBar>
             </div>
@@ -81,7 +86,7 @@ Header.propTypes = {
  * Map the actions to props.
  */
 const mapDispatchToProps = dispatch => ({
-    actions: bindActionCreators(Object.assign({}, authService), dispatch)
+    //actions: bindActionCreators(Object.assign({}, authService), dispatch)
 });
 
 export default connect(null, mapDispatchToProps)(withStyles(styles)(Header))
