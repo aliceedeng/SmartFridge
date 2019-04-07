@@ -106,7 +106,6 @@ class Converter(object):
             self.output_dict[(rid, count)] = ingredient
             count += 1  # increment in recipe counter
         print(len(self.output_dict))
-        new_dict = {}
         # for key, val in self.output_dict.items():
         #     if key[0] not in new_dict:
         #         new_dict[key[0]] = []

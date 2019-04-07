@@ -63,6 +63,9 @@ typings/
 # pickle data files
 *.pkl
 *.json
+data_processing/zestful/ingredients.txt
+data_processing/zestful/finalpred.txt
+
 
 # custom
 package-lock.json
