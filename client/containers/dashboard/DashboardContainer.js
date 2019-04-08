@@ -14,8 +14,12 @@ class DashboardContainer extends Component {
     render() {
         return (
         	<div>
-        		<Header/>
-            	<Dashboard/>
+	        	<div>
+	 				<Header/>
+	 			</div>
+	 			<div>
+	        		<Dashboard/>
+	         	</div>
          	</div>
         )
     }

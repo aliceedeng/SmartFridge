@@ -19,7 +19,7 @@ const buttonStyle = {
     backgroundColor: 'transparent',
     border: 'None',
     color: 'White',
-    size: '30 px'
+    fontSize: '30 px'
 }
 
 

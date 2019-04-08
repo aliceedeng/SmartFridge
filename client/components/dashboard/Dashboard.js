@@ -1,6 +1,8 @@
 import React from 'react';
 import {cyan, pink, purple, orange} from '@material-ui/core/colors';
 import Grid from '@material-ui/core/Grid';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
 import {AddShoppingCart, ThumbUp, Assessment, Face} from '@material-ui/icons';
 
 import SummaryBox from './SummaryBox';
@@ -15,6 +17,8 @@ const data = {
         {id: 4, title: 'Apple MacBook', text: 'Apple MacBook Pro MD101LL/A 13.3-Inch Laptop'}
     ]
 };
+
+
 
 /*
 
@@ -63,10 +67,8 @@ const data = {
 const Dashboard = () => {
 
     return (
-        
-        <div>
-
-
+        <div style={{paddingTop:'200px', paddingLeft:'50px'}}>
+            <Input autoComplete='on'></Input>  
         </div>
     );
 };
