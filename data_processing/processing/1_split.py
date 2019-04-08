@@ -11,6 +11,7 @@ def main():
     ing_in_path = 'data/join/ing_in.pkl'
     ing_in = pickle.load(open(ing_in_path, 'rb'))
     unique_names = ing_in['name'].unique().values
+    unique_names = unique_names[~np.isnan(unique_names)]
     split_size = 1500
     split_num = 0
     total = len(unique_names)
