@@ -2,7 +2,7 @@ import React from 'react';
 import {cyan, pink, purple, orange} from '@material-ui/core/colors';
 import Grid from '@material-ui/core/Grid';
 import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
+import TextField from '@material-ui/core/TextField';
 import {AddShoppingCart, ThumbUp, Assessment, Face} from '@material-ui/icons';
 
 import SummaryBox from './SummaryBox';
@@ -68,7 +68,8 @@ const Dashboard = () => {
 
     return (
         <div style={{paddingTop:'200px', paddingLeft:'50px'}}>
-            <Input autoComplete='on'></Input>  
+
+            <TextField variant="outlined" label="enter a recipe"></TextField>  
         </div>
     );
 };
