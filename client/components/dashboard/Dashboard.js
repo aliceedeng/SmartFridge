@@ -67,10 +67,11 @@ const data = {
 const Dashboard = () => {
 
     return (
-        <div style={{paddingTop:'200px', paddingLeft:'50px'}}>
+        <div display="inline-block" style={{paddingTop:'100px', paddingLeft:'450px'}}>
 
             <TextField variant="outlined" label="enter a recipe"></TextField>  
         </div>
+
     );
 };
 
