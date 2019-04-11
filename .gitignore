@@ -59,3 +59,19 @@ typings/
 
 # next.js build output
 .next
+
+# pickle data files
+*.pkl
+
+# custom
+package-lock.json
+ingredient-phrase-tagger/tmp/results.json
+ingredient-phrase-tagger/tmp/results.txt
+data_processing/zestful/output.json
+data_processing/zestful/finalpred.txt
+
+/.idea
+.env
+/dist
+
+npm-debug.log
