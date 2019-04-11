@@ -25,17 +25,24 @@ def main():
     # load ingredient dataframe
     ing_in_path = 'data/join/ing_indf.pkl'
     ing_in = pickle.load(open(ing_in_path, 'rb'))
-    # set usda_id on all ingredients using name_id_map obtained during apply
-    ing_in['usda_id'] = -1
-    group_ing = ing_in.groupby('name')
-    count = 0
-    for name, idx in group_ing.groups.items():
-        ing_in.loc[idx, 'usda_id'] = name_id_map[name]
-        count += 1
-        if count % 1000 == 0:
-            print('%d / %d' % (count, len(group_ing)))
-            sys.stdout.flush()
-    # save ingredients
+    # preparing name_id_map to be transformed into dataframe
+    name_id_map[np.NaN] = -1
+    name_id_map['nan'] = -1
+    name_id_map['NOMATCH'] = -1
+    name_id_map = pd.DataFrame.from_dict(name_id_map, orient='index')
+    print(name_id_map.columns)
+    # name only column usda_id
+    name_id_map.rename(columns={0: 'usda_id'}, inplace=True)
+    print('name_id_map df generated')
+    sys.stdout.flush()
+    # copy name to usda_id column, then replace missing values with NOMATCH
+    ing_in['usda_id'] = ing_in['name']
+    ing_in.loc[ing_in['usda_id'].isna(), 'usda_id'] = 'NOMATCH'
+    # index by name value in ing_in, generating values for usda_id column
+    usda_id = name_id_map.loc[ing_in['usda_id'].values, 'usda_id'].values
+    print('usda id generated, saving now')
+    sys.stdout.flush()
+    ing_in['usda_id'] = usda_id
     out_path = 'data/ing_in_table.pkl'
     pickle.dump(ing_in, open(out_path, 'wb'))
 
