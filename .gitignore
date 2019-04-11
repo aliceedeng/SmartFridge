@@ -75,3 +75,6 @@ data_processing/zestful/finalpred.txt
 /dist
 
 npm-debug.log
+
+data_processing/zestful/ingredients.txt
+*.json
