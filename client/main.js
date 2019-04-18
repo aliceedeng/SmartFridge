@@ -6,7 +6,6 @@ import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
 import {blueGrey} from '@material-ui/core/colors';
 
 import store, {history} from './store/configureStore';
-import {verifyToken} from './services/tokenService';
 import App from './containers/app/AppContainer';
 
 const mountNode = document.getElementById('root');
@@ -20,7 +19,6 @@ const theme = createMuiTheme({
 });
 
 // Used to log in if token is valid
-store.dispatch(verifyToken());
 
 ReactDOM.render(
     <MuiThemeProvider theme={theme}>
