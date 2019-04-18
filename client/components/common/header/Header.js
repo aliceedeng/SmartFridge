@@ -49,6 +49,7 @@ const styles = theme => ({
     flex: {
         flex: 1
     }
+
 });
 
 class Header extends Component {
@@ -61,16 +62,16 @@ class Header extends Component {
 
     render() {
         const {classes, navDrawerOpen, handleToggleDrawer} = this.props;
-
+        var updateState = this.props.updateState;
         return (
             <div>
                 <AppBar className={classNames(classes.appBar, navDrawerOpen && classes.appBarShift)}>
                     <Toolbar>
-                        <button style={buttonStyle}>search by recipe</button>
+                        <button onClick={() => updateState('recipe')} style={buttonStyle}>search by recipe</button>
                         <Typography type="title" className={classes.flex}>
 
                         </Typography>
-                        <button style={buttonStyle}>search by ingredient(s)</button>
+                        <button onClick={() => updateState('ingr')} style={buttonStyle}>search by ingredient(s)</button>
                     </Toolbar>
                 </AppBar>
             </div>
