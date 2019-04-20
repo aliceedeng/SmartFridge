@@ -11,6 +11,7 @@ class DashboardContainer extends Component {
         super(props);
         var updateState = this.updateState.bind(this);
         var storeValue = this.storeValue.bind(this);
+        var getValue = this.getValue.bind(this)
         this.arg1 = true;
         this.arg2 = "";
     }
