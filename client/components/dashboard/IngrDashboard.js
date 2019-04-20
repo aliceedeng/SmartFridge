@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {cyan, pink, purple, orange} from '@material-ui/core/colors';
 import Grid from '@material-ui/core/Grid';
 import Input from '@material-ui/core/Input';
@@ -85,9 +85,10 @@ const styles = {
                 </Grid>
             </Grid>
 */
+class IngrDashboard extends Component {
 
-const IngrDashboard = () => {
-
+  render () {
+    var getRecipe = this.props.getRecipe;
     return (
         
             <div style={{paddingTop:'100px', paddingLeft:'800px', paddingRight:'30px'}}>
@@ -97,7 +98,7 @@ const IngrDashboard = () => {
                       feeling hungry? <br /><br />
                       </span>
                     
-                    <TextField variant="outlined" placeholder="what's in your fridge?"></TextField> 
+                    <TextField variant="outlined" placeholder="what's in your fridge?" onChange={(e) => getRecipe(e)}></TextField> 
                     
                   </CardContent>
                   <CardActions>
@@ -108,6 +109,8 @@ const IngrDashboard = () => {
         
 
     );
-};
+    }
+}
+
 
 export default IngrDashboard;

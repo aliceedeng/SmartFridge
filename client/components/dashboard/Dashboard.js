@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {cyan, pink, purple, orange} from '@material-ui/core/colors';
 import Grid from '@material-ui/core/Grid';
 import Input from '@material-ui/core/Input';
@@ -42,10 +42,41 @@ const styles = {
   },
 };
 
+class Dashboard extends Component {
 
+  render() {
+    var getRecipe = this.props.getRecipe;
+    return (
+
+        <div style={{paddingTop:'100px', paddingLeft:'30px', paddingRight:'800px'}}>
+                <Card>
+                  
+                  <CardContent>
+                      <span>
+                      feeling hungry? <br /><br />
+                      </span>
+
+                    <TextField variant="outlined" placeholder="enter a dish" onChange={(e) => getRecipe(e)}></TextField>
+
+                  </CardContent>
+                  <CardActions>
+
+                  </CardActions>
+                </Card>
+            </div>
+
+
+    );
+  }
+
+}
+
+/*
 const Dashboard = () => {
 
+    var getRecipe = this.props.getRecipe;
     return (
+
         <div style={{paddingTop:'100px', paddingLeft:'30px', paddingRight:'800px'}}>
                 <Card>
                 	
@@ -54,7 +85,7 @@ const Dashboard = () => {
                       feeling hungry? <br /><br />
                       </span>
 
-                    <TextField variant="outlined" placeholder="enter a dish"></TextField>
+                    <TextField variant="outlined" placeholder="enter a dish" onChange={(e) => getRecipe(e)}></TextField>
 
                   </CardContent>
                   <CardActions>
@@ -66,5 +97,6 @@ const Dashboard = () => {
 
     );
 };
+*/
 
 export default Dashboard;

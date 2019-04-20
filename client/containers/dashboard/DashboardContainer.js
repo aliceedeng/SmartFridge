@@ -10,7 +10,14 @@ class DashboardContainer extends Component {
     constructor(props) {
         super(props);
         var updateState = this.updateState.bind(this);
+        var getRecipe = this.getRecipe.bind(this);
         this.arg1 = true;
+        this.arg2 = "";
+    }
+
+    getRecipe(arg) {
+        console.log(arg.target.value)
+        this.arg2 = arg
     }
 
     updateState(arg) {
@@ -24,8 +31,6 @@ class DashboardContainer extends Component {
             //alert('pressed ingredients button')
         }
 
-
-
     }
 
 
@@ -34,12 +39,14 @@ class DashboardContainer extends Component {
         const recipePage = this.arg1;
         console.log(recipePage)
         let display;
-        if (recipePage) {
-            display = <Dashboard />
-        } else {
-            display = <IngrDashboard/>
-        }
 
+        var getRecipe = this.getRecipe;
+
+        if (recipePage) {
+            display = <Dashboard getRecipe = {getRecipe.bind(this)}/>
+        } else {
+            display = <IngrDashboard getRecipe = {getRecipe.bind(this)}/>
+        }
 
         return (
         	<div>
