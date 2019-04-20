@@ -45,7 +45,8 @@ const styles = {
 class Dashboard extends Component {
 
   render() {
-    var getRecipe = this.props.getRecipe;
+    var storeValue = this.props.storeValue;
+    var getValue = this.props.getValue;
     return (
 
         <div style={{paddingTop:'100px', paddingLeft:'30px', paddingRight:'800px'}}>
@@ -56,7 +57,7 @@ class Dashboard extends Component {
                       feeling hungry? <br /><br />
                       </span>
 
-                    <TextField variant="outlined" placeholder="enter a dish" onChange={(e) => getRecipe(e)}></TextField>
+                    <TextField variant="outlined" placeholder="enter a dish" onKeyDown={(e) => getValue(e)} onChange={(e) => storeValue(e)}></TextField>
 
                   </CardContent>
                   <CardActions>

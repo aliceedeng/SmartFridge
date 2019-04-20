@@ -10,14 +10,21 @@ class DashboardContainer extends Component {
     constructor(props) {
         super(props);
         var updateState = this.updateState.bind(this);
-        var getRecipe = this.getRecipe.bind(this);
+        var storeValue = this.storeValue.bind(this);
         this.arg1 = true;
         this.arg2 = "";
     }
 
-    getRecipe(arg) {
-        console.log(arg.target.value)
-        this.arg2 = arg
+    storeValue(arg) {
+        console.log("storing value: "+ arg.target.value);
+        this.arg2 = arg.target.value;
+    }
+
+    getValue(arg) { //key press: Enter
+        if(arg.keyCode == 13) {
+            //console.log("search value:" + this.arg2)
+            alert('searched for ' + this.arg2)
+        }   
     }
 
     updateState(arg) {
@@ -40,12 +47,13 @@ class DashboardContainer extends Component {
         console.log(recipePage)
         let display;
 
-        var getRecipe = this.getRecipe;
+        var storeValue = this.storeValue;
+        var getValue = this.getValue;
 
         if (recipePage) {
-            display = <Dashboard getRecipe = {getRecipe.bind(this)}/>
+            display = <Dashboard storeValue = {storeValue.bind(this)} getValue = {getValue.bind(this)}/>
         } else {
-            display = <IngrDashboard getRecipe = {getRecipe.bind(this)}/>
+            display = <IngrDashboard storeValue = {storeValue.bind(this)} getValue = {getValue.bind(this)}/>
         }
 
         return (
