@@ -14,7 +14,6 @@ import webpackConfig from '../webpack/webpack.config.dev';
 app.use('/dist', express.static('./dist'));
 
 if (process.env.NODE_ENV === 'development') {
-
     const compiler = webpack(webpackConfig);
     app.use(webpackDevMiddleware(compiler, {noInfo: true, publicPath: webpackConfig.output.publicPath}));
     app.use(webpackHotMiddleware(compiler, {path: '/__webpack_hmr'}));
