@@ -22,7 +22,7 @@ var config = {
         publicPath: '/dist/',
     },
     plugins: [
-        
+
     ],
     module: {
         rules: [
