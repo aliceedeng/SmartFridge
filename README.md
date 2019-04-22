@@ -8,7 +8,6 @@ $ git clone https://github.com/stephanieyshi/cis550.git
 $ cd cis550
 $ cp .env.example .env (edit it with your secret key and database information)
 $ npm install
-$ npm run migrate
 ```
 
 To run:
