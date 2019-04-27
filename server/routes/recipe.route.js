@@ -1,9 +1,10 @@
 import express from 'express';
+require('dotenv').config();
 
 const router = express.Router();
+const recipes = require('../controllers/recipe.controller.js');
 
-router.get('/', function(req, res) {
-   res.send('GET route on things.');
-});
+router.route('/:id?')
+  .get(recipes.get)
 
 export default router;
