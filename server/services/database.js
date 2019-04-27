@@ -2,7 +2,7 @@ const oracledb = require('oracledb');
 const dbConfig = require('../config/database.js');
 
 async function initialize() {
-  await oracledb.createPool(dbConfig.hrPool);
+  await oracledb.createPool(dbConfig.default.hrPool);
 }
 
 module.exports.initialize = initialize;
