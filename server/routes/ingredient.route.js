@@ -1,13 +1,10 @@
 import express from 'express';
+require('dotenv').config();
 
 const router = express.Router();
+const ingredients = require('../controllers/ingredient.controller.js');
 
-router.get('/', function(req, res) {
-   res.send('GET route on things.');
-});
-
-router.get('/:id', function(req, res) {
-  res.json({'yum': 'why'});
-})
+router.route('/:id?')
+  .get(ingredients.get)
 
 export default router;

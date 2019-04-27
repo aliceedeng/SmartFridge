@@ -11,6 +11,24 @@ import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import webpackConfig from '../webpack/webpack.config.dev';
 
+const database = require('./services/database.js');
+const dbConfig = require('./config/database.js');
+
+// set up database
+async function db_init() {
+  try {
+    console.log('Initializing database module');
+
+    await database.initialize();
+  } catch (err) {
+    console.error(err);
+
+    process.exit(1); // Non-zero failure code
+  }
+}
+
+db_init();
+
 app.use('/dist', express.static('./dist'));
 
 if (process.env.NODE_ENV === 'development') {
