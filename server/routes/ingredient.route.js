@@ -7,4 +7,7 @@ const ingredients = require('../controllers/ingredient.controller.js');
 router.route('/:id?')
   .get(ingredients.get)
 
+router.route('/name/:name')
+  .get(ingredients.getByName)
+
 export default router;

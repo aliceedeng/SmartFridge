@@ -19,4 +19,14 @@ async function find(context) {
   return result.rows;
 }
 
+async function getByName(name) {
+  let query = `SELECT name FROM USDA WHERE name LIKE '` + name + `%'`;
+
+  console.log(query);
+
+  const result = await database.simpleExecute(query, {});
+  return result.rows;
+}
+
 module.exports.find = find;
+module.exports.getByName = getByName;
