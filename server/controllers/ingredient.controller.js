@@ -28,7 +28,7 @@ export async function getByName(req, res, next) {
 
     const rows = await ingredient.getByName(name);
 
-    if (req.params.id) {
+    if (req.params.name) {
       if (rows.length === 1) {
         res.status(200).json(rows[0]);
       } else {
@@ -40,4 +40,4 @@ export async function getByName(req, res, next) {
   } catch (err) {
     next(err);
   }
-}4
+}

@@ -5,6 +5,9 @@ const router = express.Router();
 const recipes = require('../controllers/recipe.controller.js');
 
 router.route('/:id?')
-  .get(recipes.get)
+  .get(recipes.getById)
+
+router.route('/name/:name')
+  .get(recipes.getByName)
 
 export default router;

@@ -15,4 +15,14 @@ async function find(context) {
   return result.rows;
 }
 
+async function getByName(name) {
+  let query = `SELECT Title, dbms_lob.substr(INSTRUCTIONS,10000,1) FROM RECIPES WHERE Title LIKE '` + name + `%'`;
+
+  console.log(query);
+
+  const result = await database.simpleExecute(query, {});
+  return result.rows;
+}
+
 module.exports.find = find;
+module.exports.getByName = getByName;
