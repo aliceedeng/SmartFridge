@@ -16,7 +16,7 @@ async function find(context) {
 }
 
 async function getByName(name) {
-  let query = `SELECT Title, dbms_lob.substr(INSTRUCTIONS,10000,1) FROM RECIPES WHERE Title LIKE '` + name + `%'`;
+  let query = `SELECT Title, dbms_lob.substr(INSTRUCTIONS,2000,1), dbms_lob.substr(INSTRUCTIONS,2000,2001) FROM RECIPES WHERE Title LIKE '` + name + `%'`;
 
   console.log(query);
 
