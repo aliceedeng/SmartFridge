@@ -1,24 +1,23 @@
 import React, {Fragment} from 'react';
 
 // Import routing components
-import {BrowserRouter, Route, Switch} from 'react-router-dom';
+import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom';
 
 // Import custom components
-import MainLayout from '../components/common/layout/MainLayout';
+import RecipeDashboard from '../containers/dashboard/RecipeContainer';
+import IngredientDashboard from '../containers/dashboard/IngredientContainer';
 import NotFound from '../components/error/NotFound';
-//import LoginForm from '../containers/auth/LoginContainer';
-//import SignUpForm from '../containers/auth/SignUpContainer';
-import Dashboard from '../containers/dashboard/DashboardContainer';
-//import Search from '../components/search/Search'
-//import Authentication from './Authentication';
 
 const Router = () => (
     <Fragment>
       <BrowserRouter>
           <Switch>
-              <Route exact path="/" component={Dashboard}/>
-
-              <Route component={NotFound}/>
+              <Route exact path='/'>
+                  <Redirect to='/recipes'/>
+              </Route>
+              <Route exact path="/ingredients" component={IngredientDashboard}/>
+              <Route exact path='/recipes' component={RecipeDashboard}/>
+              <Route component={NotFound} />
           </Switch>
       </BrowserRouter>
     </Fragment>

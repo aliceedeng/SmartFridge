@@ -1,17 +1,12 @@
 import React, {Component} from 'react';
-import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { withRouter } from 'react-router-dom';
 import {withStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-
-//import * as authService from '../../../services/authService';
 
 const drawerWidth = 250;
 
@@ -20,7 +15,7 @@ const buttonStyle = {
     border: 'None',
     color: 'White',
     fontSize: '30 px'
-}
+};
 
 
 const styles = theme => ({
@@ -52,6 +47,26 @@ const styles = theme => ({
 
 });
 
+const RecipeButton = withRouter(({ history }) => (
+    <button
+        style={buttonStyle}
+        type='button'
+        onClick={() => { history.push('/recipes'); }}
+    >
+        search by recipe
+    </button>
+));
+
+const IngredientButton = withRouter(({ history }) => (
+    <button
+        style={buttonStyle}
+        type='button'
+        onClick={() => { history.push('/ingredients'); }}
+    >
+        search by ingredient
+    </button>
+));
+
 class Header extends Component {
 
     /*
@@ -60,22 +75,23 @@ class Header extends Component {
         this.props.actions.logout();
     }*/
 
+
     render() {
         const {classes, navDrawerOpen, handleToggleDrawer} = this.props;
-        var updateState = this.props.updateState;
-        return (
+
+return (
             <div>
                 <AppBar className={classNames(classes.appBar, navDrawerOpen && classes.appBarShift)}>
                     <Toolbar>
-                        <button onClick={() => updateState('recipe')} style={buttonStyle}>search by recipe</button>
+                        <RecipeButton />
                         <Typography type="title" className={classes.flex}>
 
                         </Typography>
-                        <button onClick={() => updateState('ingr')} style={buttonStyle}>search by ingredient(s)</button>
+                        <IngredientButton />
                     </Toolbar>
                 </AppBar>
             </div>
-        )
+        );
     }
 }
 
@@ -87,7 +103,7 @@ Header.propTypes = {
  * Map the actions to props.
  */
 const mapDispatchToProps = dispatch => ({
-    //actions: bindActionCreators(Object.assign({}, authService), dispatch)
+    // actions: bindActionCreators(Object.assign({}, authService), dispatch)
 });
 
-export default connect(null, mapDispatchToProps)(withStyles(styles)(Header))
+export default connect(null, mapDispatchToProps)(withStyles(styles)(Header));

@@ -3,7 +3,6 @@ const ingredient  = require('../db/ingredient.js');
 
 export async function getById(req, res, next) {
   try {
-    console.log(req.params.rid);
     const ings = await ingredient.ridIngredients(req.params.rid);
     const instructions = await recipe.instructions(req.params.rid);
     const output = {

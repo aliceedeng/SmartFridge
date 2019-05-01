@@ -9,7 +9,7 @@ import CardList from '../../components/dashboard/CardList';
 import Header from '../../components/common/header/Header';
 import Grid  from '@material-ui/core/Grid';
 
-class DashboardContainer extends Component {
+class RecipeDashboard extends Component {
 
     constructor(props) {
         super(props);
@@ -109,4 +109,4 @@ return (
 
 }
 
-export default DashboardContainer;
+export default RecipeDashboard;
