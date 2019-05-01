@@ -3,7 +3,7 @@ import axios from 'axios';
 
 
 // Import custom components
-import Dashboard from '../../components/dashboard/Dashboard';
+import SearchCard from '../../components/dashboard/SearchCard';
 import IngrDashboard from '../../components/dashboard/IngrDashboard';
 import CardList from '../../components/dashboard/CardList';
 import Header from '../../components/common/header/Header';
@@ -68,17 +68,12 @@ class RecipeDashboard extends Component {
         var getValue = this.getValue;
         // var componentDidMount = this.componentDidMount;
 
-        if (recipePage) {
-            display = <Dashboard storeValue={storeValue.bind(this)} getValue={getValue.bind(this)} />;
-        } else {
-            display = <IngrDashboard storeValue={storeValue.bind(this)} getValue={getValue.bind(this)} />;
-        }
+        display = <SearchCard storeValue={storeValue.bind(this)} getValue={getValue.bind(this)} ingredient={true}/>;
 
         let recipeCards;
 
         var recipeList = this.state.recipes;
         if (this.state.hasRecipes) {
-            console.log('making recipes');
             recipeCards = <CardList recipeList={recipeList} />;
         }
         var className = '';

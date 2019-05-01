@@ -15,14 +15,6 @@ import SummaryBox from './SummaryBox';
 import Product from './Product';
 import Header from '../common/header/Header';
 
-const data = {
-    recentProducts: [
-        {id: 1, title: 'Samsung TV', text: 'Samsung 32 1080p 60Hz LED Smart HDTV.'},
-        {id: 2, title: 'Playstation 4', text: 'PlayStation 3 500 GB System'},
-        {id: 3, title: 'Apple iPhone 6', text: 'Apple iPhone 6 Plus 16GB Factory Unlocked GSM 4G '},
-        {id: 4, title: 'Apple MacBook', text: 'Apple MacBook Pro MD101LL/A 13.3-Inch Laptop'}
-    ]
-};
 
 const styles = {
   card: {
@@ -90,7 +82,8 @@ class IngrDashboard extends Component {
   render () {
     var storeValue = this.props.storeValue;
     var getValue = this.props.getValue;
-    return (
+    
+return (
         
             <div style={{paddingTop:'100px', paddingLeft:'800px', paddingRight:'30px'}}>
                 <Card>
