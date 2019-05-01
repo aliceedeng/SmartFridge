@@ -6,6 +6,22 @@ const baseQuery =
   WHERE RID = 'rmK12Uau.ntP510KeImX506H6Mr6jTu' OR RID = '5ZpZE8hSVdPk2ZXo1mZTyoPWJRSCPSm'
   `;
 
+/*
+ * Get instructions associated with a given recipe rid
+ * REQUIRES update for long form instructions--questions to answer
+ * 1. How to identify when multiple globs are required for an instruction set
+ * 2. How to combine them (1 is hard 2 is easy)
+ *
+ * Ultimately, should return instructions as string, rather than array of objects
+ */
+async function instructions(rid) {
+    let query = `SELECT dbms_lob.substr(INSTRUCTIONS,2000,1) AS instructions
+    FROM RECIPES
+    WHERE RID='` + rid + `'`;
+    const result = await database.simpleExecute(query);
+    return result.rows[0].INSTRUCTIONS;
+}
+
 async function find(context) {
   let query = baseQuery;
   const binds = {};
@@ -15,11 +31,18 @@ async function find(context) {
   return result.rows;
 }
 
-async function getByName(name) {
-  let query = `SELECT Title, dbms_lob.substr(INSTRUCTIONS,2000,1), dbms_lob.substr(INSTRUCTIONS,2000,2001) FROM RECIPES WHERE Title LIKE '` + name + `%'`;
+//original query: let query = `SELECT Title, dbms_lob.substr(INSTRUCTIONS,2000,1),` +
+//   `dbms_lob.substr(INSTRUCTIONS,2000,2001) FROM RECIPES WHERE Title LIKE '` + name + `%'` +
+//   ` AND ROWNUM <= ` + count;
+//   ` AND ROWNUM <= ` + count;
+//   BUG: UPDATE TO TRANSFORM PICTURE_LINK HASH TO TRUE PICTURE LINK
+async function getByName(name, count) {
+  let query = `SELECT Title, RID, PICTURE_LINK FROM RECIPES WHERE Title LIKE '` + name + `%'` +
+   ` AND ROWNUM <= ` + count;
 
   const result = await database.simpleExecute(query, {});
-  return result.rows;
+
+return result.rows;
 }
 
 // this doesn't work for some reason
@@ -31,7 +54,8 @@ async function getByIngredientsOr(id) {
    console.log(query);
 
    const result = await database.simpleExecute(query, {});
-   return result.rows;
+   
+return result.rows;
 }
 
 async function getHighProtein() {
@@ -48,17 +72,20 @@ async function getHighProtein() {
   console.log(query);
 
   const result = await database.simpleExecute(query, {});
-  return result.rows;
+  
+return result.rows;
 }
 
 async function getRandom() {
   var query = `SELECT * FROM RECIPES WHERE ROWNUM = 1`;
 
   const result = await database.simpleExecute(query, {});
-  return result.rows;
+  
+return result.rows;
 }
 
 module.exports.find = find;
+module.exports.instructions = instructions;
 module.exports.getByName = getByName;
 module.exports.getByIngredientsOr = getByIngredientsOr;
 module.exports.getHighProtein = getHighProtein;

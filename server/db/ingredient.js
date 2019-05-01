@@ -4,6 +4,17 @@ const baseQuery =
  `select *
   from ingredients`;
 
+/*
+ * Returns the input descriptions (i.e. natural text descriptions) of ingredients
+ * associated with a particular recipe
+ */
+async function ridIngredients(rid) {
+  let query = `SELECT INPUT FROM INGREDIENTS WHERE RID = '` + rid + `'`;
+  const result = await database.simpleExecute(query, {});
+
+  return result.rows.map(row => row.INPUT);
+}
+
 async function find(context) {
   let query = baseQuery;
   const binds = {};
@@ -25,8 +36,10 @@ async function getByName(name) {
   console.log(query);
 
   const result = await database.simpleExecute(query, {});
-  return result.rows;
+  
+return result.rows;
 }
 
+module.exports.ridIngredients = ridIngredients;
 module.exports.find = find;
 module.exports.getByName = getByName;

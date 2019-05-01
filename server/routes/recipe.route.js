@@ -4,8 +4,8 @@ require('dotenv').config();
 const router = express.Router();
 const recipes = require('../controllers/recipe.controller.js');
 
-// router.route('/:id?')
-//   .get(recipes.getById)
+router.route('/rid/:rid')
+   .get(recipes.getById)
 
 router.route('/name/:name')
   .get(recipes.getByName)

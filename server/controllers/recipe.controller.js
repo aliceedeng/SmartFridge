@@ -1,21 +1,20 @@
 const recipe = require('../db/recipe.js');
+const ingredient  = require('../db/ingredient.js');
 
 export async function getById(req, res, next) {
   try {
-    const context = {};
-
-    context.id = parseInt(req.params.id, 10);
-
-    const rows = await recipe.find(context);
-
-    if (req.params.id) {
-      if (rows.length === 1) {
-        res.status(200).json(rows[0]);
-      } else {
+    console.log(req.params.rid);
+    const ings = await ingredient.ridIngredients(req.params.rid);
+    const instructions = await recipe.instructions(req.params.rid);
+    const output = {
+        ingredients: ings,
+        instructions: instructions
+    };
+    if (!req.params.rid) {
         res.status(404).end();
-      }
-    } else {
-      res.status(200).json(rows);
+    }
+    else {
+      res.status(200).json(output);
     }
   } catch (err) {
     next(err);
@@ -24,9 +23,10 @@ export async function getById(req, res, next) {
 
 export async function getByName(req, res, next) {
   try {
+    var len = req.query.len;
     var name = req.params.name;
 
-    const rows = await recipe.getByName(name);
+    const rows = await recipe.getByName(name, len);
 
     if (req.params.id) {
       if (rows.length === 1) {
