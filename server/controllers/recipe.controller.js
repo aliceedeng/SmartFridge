@@ -22,7 +22,7 @@ export async function getById(req, res, next) {
 
 export async function getByName(req, res, next) {
   try {
-    var len = req.query.len;
+    var len = parseInt(req.query.len);
     var name = req.params.name;
 
     const rows = await recipe.getByName(name, len);

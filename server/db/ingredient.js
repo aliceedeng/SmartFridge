@@ -1,3 +1,4 @@
+// NOTE: WHENEVER SELECTING INGREDIENT BY NAME FROM USDA--TRIM BEFORE RETURNING
 const database = require('../services/database.js');
 
 const baseQuery =
@@ -30,16 +31,26 @@ async function find(context) {
   return result.rows;
 }
 
-async function getByName(name) {
-  let query = `SELECT name FROM USDA WHERE name LIKE '` + name + `%'`;
+/*
+ * Gets all ingredients (names and ids) from usda table
+ */
+async function getAll() {
+  let query = `SELECT TRIM(name) AS name, USDA_ID AS id FROM USDA`;
+  const result = await database.simpleExecute(query, {});
 
-  console.log(query);
+  return result.rows;
+}
+// Returns ingredients (names and usda_id) that contain a given substring
+// from the usda ingredient table
+async function getByName(name) {
+  let query = `SELECT TRIM(name) AS name, USDA_ID AS id FROM USDA WHERE name LIKE '%` + name + `%'`;
 
   const result = await database.simpleExecute(query, {});
   
 return result.rows;
 }
 
+module.exports.getAll = getAll;
 module.exports.ridIngredients = ridIngredients;
 module.exports.find = find;
 module.exports.getByName = getByName;
