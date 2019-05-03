@@ -6,7 +6,8 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import CardContent from '@material-ui/core/CardContent';
 import {clearFridge, removeIngredient} from '../../actions/ingredientAction';
-
+import {CancelTwoTone} from '@material-ui/icons';
+import IconButton from '@material-ui/core/IconButton'
 const styles = {
   card: {
     minWidth: 275,
@@ -47,6 +48,7 @@ const getStyle = function(isIngredient) {
   return style;
 };
 
+
 function mapStateToProps(state) {
     return(
         {
@@ -63,10 +65,12 @@ function mapDispatchToProps(dispatch) {
     }, dispatch);
 }
 
-
 class SearchCard extends Component {
   /*
   props:
+    fridgeContents: array giving the current ingredients in the fridge
+    clearFridge: function for clearing the contents of the fridge (given no arguments)
+    removeIngredient: function for removing a particular ingredient from the fridge (given id as argument)
     storeText: Function for updating text field of parent component with most recently entered text in search bar
     getText: Function for querying database for information related to current value in text field
     ingredient: boolean giving whether this search card is for searching ingredients (alternatively recipes)
@@ -76,14 +80,23 @@ class SearchCard extends Component {
     const storeText = this.props.storeText;
     const getText = this.props.getText;
     let fridge;
-    console.log(this.props.fridgeContents);
+    let actions;
     if (this.props.ingredient) {
         fridge = this.props.fridgeContents.map(ingredient => (
-            <li key={ingredient.id}>{ingredient.name}</li>
+            <li onClick={(e) => this.props.removeIngredient(ingredient.id)}
+                key={ingredient.id}
+            >{ingredient.name}</li>
         ));
+        actions = (<IconButton
+                        onClick={(e) => this.props.clearFridge()}
+                        aria-label="Clear items in fridge">
+                        <CancelTwoTone/>
+                    </IconButton>);
     } else {
         fridge = <span/>;
+        actions = <span/>;
     }
+
 
 return (
 
@@ -99,8 +112,8 @@ return (
                                onKeyDown={(e) => getText(e)} onChange={(e) => storeText(e)}></TextField>
                       {fridge}
                   </CardContent>
-                  <CardActions>
-
+                  <CardActions className={'actions'}>
+                      {actions}
                   </CardActions>
                 </Card>
             </div>

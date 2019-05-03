@@ -9,7 +9,7 @@ let initialState = {
     contents: []
 };
 
-/**
+ /**
  * Reducer for ingredients fridge
  *
  * INGREDIENT_ADD : adds an ingredient with the given id and name (stored in action.data) to fridge contents
@@ -50,7 +50,7 @@ export default function (state, action) {
                 contents: []
             });
 
-            return state;
+            return newState;
 
         default:
             return state;
