@@ -16,7 +16,7 @@
     "spaced-comment": 2,
     "space-infix-ops": 2,
     "newline-before-return": 2,
-    "linebreak-style": [2, "windows"],
+    "linebreak-style": [2, "unix"],
     "camelcase": [2, {"properties": "never"}],
     "quotes": [2, "single", {"allowTemplateLiterals": true}],
     "react/jsx-uses-react": "error",

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import RecipeCard from './RecipeCard.js';
 import IngredientCard from './IngredientCard.js';
 
@@ -29,7 +29,10 @@ const CardList = ({ resultsData, ingredient } ) => {
   let cardsArray;
   if (ingredient) {
       cardsArray = resultsData.map((ingredient, index) => (
-          <IngredientCard key={index} name={ingredient.NAME} id={ingredient.ID} />
+          <IngredientCard key={index}
+                          name={ingredient.NAME}
+                          id={ingredient.ID}
+          />
     ));
   } else {
       cardsArray = resultsData.map((recipe, index) => (

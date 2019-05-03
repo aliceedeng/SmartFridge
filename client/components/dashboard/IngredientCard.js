@@ -1,4 +1,5 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
@@ -9,12 +10,13 @@ import {ExpandMore, CheckBoxOutlineBlankTwoTone, CheckBoxTwoTone} from '@materia
 import CardActions from '@material-ui/core/CardActions';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import classnames from 'classnames';
 import axios from 'axios';
 import { withStyles } from '@material-ui/core/styles';
+import {bindActionCreators} from 'redux';
+import {addIngredient, removeIngredient} from '../../actions/ingredientAction';
 
 var classes = {
     actions: 'actions',
@@ -42,14 +44,18 @@ const styles = theme => ({
         transform: 'rotate(180deg)',
     }
 });
+const inFridge = function(fridge, id) {
+    let index = fridge.map((ingredient) => (ingredient.id)).indexOf(id);
 
-class RecipeCard extends React.Component {
+    return index !== -1;
+}
+
+class IngredientCard extends React.Component {
     /*
     Props should contain title, rid, imgLink later
      */
     state = {
         expanded: false,
-        added: false,
         calories: 0,
         protein: 0,
         sodium: 0,
@@ -58,8 +64,16 @@ class RecipeCard extends React.Component {
     };
 
     handleAddClick = () => {
-        this.setState(state => ({added: !state.added}));
+        if (inFridge(this.props.fridgeContents, this.props.id)) {
+            this.props.removeIngredient(this.props.id);
+        } else {
+            this.props.addIngredient({
+                name: this.props.name,
+                id: this.props.id
+            });
+        }
     }
+
     handleExpandClick = () => {
         if (!this.state.expanded) {
             const request = '/api/ingredient/facts/' + this.props.id;
@@ -93,19 +107,20 @@ class RecipeCard extends React.Component {
     }
 
     render() {
-        let actionStyle = {}
+        let actionStyle = {};
         let checkboxIcon;
         if (this.state.expanded) {
             actionStyle.transform = 'rotate(180deg)';
         } else {
             actionStyle.transform = 'rotate(0deg)';
         }
-        if (this.state.added) {
+        if (inFridge(this.props.fridgeContents, this.props.id)) {
             checkboxIcon = <CheckBoxTwoTone />;
         } else {
             checkboxIcon = <CheckBoxOutlineBlankTwoTone />;
         }
-        return (
+        
+return (
             <div style={{ paddingBottom: '10px' }}>
                 <Card>
                     <CardContent>
@@ -164,9 +179,19 @@ class RecipeCard extends React.Component {
     }
 }
 
-/*
-<Typography component="p">
-            {this.props.instructions}
-</Typography>
- */
-export default RecipeCard;
+function mapStateToProps(state) {
+    return(
+        {
+            fridgeContents: state.fridge.contents
+        }
+    );
+}
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+        addIngredient: addIngredient,
+        removeIngredient: removeIngredient
+    }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(IngredientCard);

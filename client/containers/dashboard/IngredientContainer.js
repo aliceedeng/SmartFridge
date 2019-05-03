@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
 
 
 // Import custom components
@@ -7,17 +8,17 @@ import SearchCard from '../../components/dashboard/SearchCard';
 import CardList from '../../components/dashboard/CardList';
 import Header from '../../components/common/header/Header';
 
-class RecipeDashboard extends Component {
+class IngredientDashboard extends Component {
     /*
      * Component encapsulating functionality related to recipe search, including recipe search bar and
      * card of returned recipes
      *
-     * Props: None
+     * Props:
+     *  fridge: array of ingredients the user has currently selected, made available through store
      *
      * State:
      *  recipes: array of recipes to display in CardList when user has searched for recipes
      *  ingredients: array of ingredients to display in CardList when the user has searched for an ingredient
-     *  fridge: array of ingredients the user has currently selected
      *  hasRecipeResults: boolean for whether recipes should be displayed
      *  hasIngredientResults: boolean for whether ingredients should be displayed
      *
@@ -36,10 +37,25 @@ class RecipeDashboard extends Component {
         this.state = {
             ingredients: [],
             recipes: [],
-            fridge: [],
             hasRecipeResults: false,
             hasIngredientResults: false,
         };
+    }
+
+    /*
+     * Adds an item to the fridge with a given name and id -- not sure this
+     * should even be here with redux refactoring
+     *
+     * DEPRECATED
+     */
+    addToFridge(name, id) {
+        const ingredient = {
+            name: name,
+            id: id
+        };
+        this.setState(state => ({
+            ingredients:[state.ingredients, ingredient]
+        }));
     }
 
     // Updates search text based on latest user action
@@ -69,15 +85,21 @@ class RecipeDashboard extends Component {
 
 
     render() {
-        let display;
-        display = <SearchCard storeText={this.storeText} getText={this.getText} ingredient={true} />;
+         let display;
+        display = <SearchCard
+            storeText={this.storeText}
+            getText={this.getText}
+            ingredient={true}
+        />;
 
         let resultsCards;
         if (this.state.hasRecipeResults) {
-            resultsCards = <CardList resultsData={this.state.recipes} ingredient={false} />;
+            resultsCards = <CardList
+                resultsData={this.state.recipes}
+                ingredient={false} />;
         }
         if (this.state.hasIngredientResults) {
-            resultsCards = <CardList resultsData={this.state.ingredients} ingredient={true} />
+            resultsCards = <CardList resultsData={this.state.ingredients} ingredient={true} />;
         }
 
         return (
@@ -100,4 +122,4 @@ class RecipeDashboard extends Component {
 
 }
 
-export default RecipeDashboard;
+export default IngredientDashboard;

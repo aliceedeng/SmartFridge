@@ -2,7 +2,10 @@ import React, {Component} from 'react';
 import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import CardContent from '@material-ui/core/CardContent';
+import {clearFridge, removeIngredient} from '../../actions/ingredientAction';
 
 const styles = {
   card: {
@@ -42,7 +45,24 @@ const getStyle = function(isIngredient) {
   }
 
   return style;
+};
+
+function mapStateToProps(state) {
+    return(
+        {
+            fridgeContents: state.fridge.contents
+        }
+    );
 }
+
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+        clearFridge: clearFridge,
+        removeIngredient: removeIngredient
+    }, dispatch);
+}
+
 
 class SearchCard extends Component {
   /*
@@ -55,7 +75,16 @@ class SearchCard extends Component {
   render() {
     const storeText = this.props.storeText;
     const getText = this.props.getText;
-    
+    let fridge;
+    console.log(this.props.fridgeContents);
+    if (this.props.ingredient) {
+        fridge = this.props.fridgeContents.map(ingredient => (
+            <li key={ingredient.id}>{ingredient.name}</li>
+        ));
+    } else {
+        fridge = <span/>;
+    }
+
 return (
 
         <div style={getStyle(this.props.ingredient)}>
@@ -68,7 +97,7 @@ return (
 
                     <TextField variant="outlined" placeholder={getFlavor(this.props.ingredient)}
                                onKeyDown={(e) => getText(e)} onChange={(e) => storeText(e)}></TextField>
-
+                      {fridge}
                   </CardContent>
                   <CardActions>
 
@@ -82,32 +111,4 @@ return (
 
 }
 
-/*
-const SearchCard = () => {
-
-    var getRecipe = this.props.getRecipe;
-    return (
-
-        <div style={{paddingTop:'100px', paddingLeft:'30px', paddingRight:'800px'}}>
-                <Card>
-                	
-                  <CardContent>
-                      <span>
-                      feeling hungry? <br /><br />
-                      </span>
-
-                    <TextField variant="outlined" placeholder="enter a dish" onChange={(e) => getRecipe(e)}></TextField>
-
-                  </CardContent>
-                  <CardActions>
-
-                  </CardActions>
-                </Card>
-            </div>
-
-
-    );
-};
-*/
-
-export default SearchCard;
+export default connect(mapStateToProps, mapDispatchToProps)(SearchCard);
