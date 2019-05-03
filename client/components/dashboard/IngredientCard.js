@@ -15,6 +15,7 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import classnames from 'classnames';
 import axios from 'axios';
 import { withStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
 
 var classes = {
     actions: 'actions',
@@ -106,7 +107,7 @@ class RecipeCard extends React.Component {
             checkboxIcon = <CheckBoxOutlineBlankTwoTone />;
         }
         return (
-            <div style={{ paddingBottom: '10px' }}>
+            <Grid item xs={4}>
                 <Card>
                     <CardContent>
                         <Typography  variant="h5" component="h2">
@@ -159,7 +160,7 @@ class RecipeCard extends React.Component {
                         </CardContent>
                     </Collapse>
                 </Card>
-            </div>
+            </Grid>
         );
     }
 }

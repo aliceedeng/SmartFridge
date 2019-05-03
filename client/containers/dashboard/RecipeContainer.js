@@ -19,6 +19,7 @@ const styles = theme => ({
   },
 });
 
+//styling for the div containing all the recipe cards
 const divStyle = {
     paddingTop:'20px',
     paddingLeft:'30px',

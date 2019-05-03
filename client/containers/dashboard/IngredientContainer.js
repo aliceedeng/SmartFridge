@@ -1,11 +1,20 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Grid from '@material-ui/core/Grid';
 
 
 // Import custom components
 import SearchCard from '../../components/dashboard/SearchCard';
 import CardList from '../../components/dashboard/CardList';
 import Header from '../../components/common/header/Header';
+
+
+//for styling the container holding the ingredient cards
+const divStyle = {
+    paddingTop:'20px',
+    paddingLeft:'30px',
+    paddingRight:'30px'
+}
 
 class RecipeDashboard extends Component {
     /*
@@ -89,7 +98,7 @@ class RecipeDashboard extends Component {
                     <div>
                         {display}
                     </div>
-                    <div>
+                    <div style={divStyle}>
                         { resultsCards }
                     </div>
                 </div>
