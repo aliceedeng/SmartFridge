@@ -60,7 +60,7 @@ class RecipeDashboard extends Component {
 
         let recipeCards;
         if (this.state.hasRecipes) {
-            recipeCards = <CardList recipeList={this.state.recipes} />;
+            recipeCards = <CardList resultsData={this.state.recipes} ingredient={false} />;
         }
         
 return (

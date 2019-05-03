@@ -40,6 +40,16 @@ async function getAll() {
 
   return result.rows;
 }
+
+// Gets nutrition facts associated with a specific ingredient id from usda table
+// specifically returns CAL (in food calories), protein (in grams), sodium (in mg), sugar (grams) per 100grams
+// chosterol (mg)
+async function getFacts(id) {
+    let query = `SELECT CAL, PROTEIN, SUGAR, SODIUM, CHOLESTEROL FROM USDA WHERE USDA_ID=` + id;
+    const result = await database.simpleExecute(query, {});
+
+    return result.rows;
+}
 // Returns ingredients (names and usda_id) that contain a given substring
 // from the usda ingredient table
 async function getByName(name) {
@@ -50,6 +60,7 @@ async function getByName(name) {
 return result.rows;
 }
 
+module.exports.getFacts = getFacts;
 module.exports.getAll = getAll;
 module.exports.ridIngredients = ridIngredients;
 module.exports.find = find;

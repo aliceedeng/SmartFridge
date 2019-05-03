@@ -4,8 +4,14 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {ExpandMore, CheckBoxOutlineBlankTwoTone, CheckBoxTwoTone} from '@material-ui/icons';
+
 import CardActions from '@material-ui/core/CardActions';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import classnames from 'classnames';
 import axios from 'axios';
 import { withStyles } from '@material-ui/core/styles';
@@ -43,44 +49,68 @@ class RecipeCard extends React.Component {
      */
     state = {
         expanded: false,
-        instructions: '',
-        ingredients: ''
+        added: false,
+        calories: 0,
+        protein: 0,
+        sodium: 0,
+        sugar: 0,
+        cholesterol: 0
     };
 
+    handleAddClick = () => {
+        this.setState(state => ({added: !state.added}));
+    }
     handleExpandClick = () => {
         if (!this.state.expanded) {
-            var request = '/api/recipe/rid/' + this.props.rid;
-            console.log(request);
+            const request = '/api/ingredient/facts/' + this.props.id;
             axios.get(request)
                 .then(res => {
+                    const sugar = res.data.SUGAR ? res.data.SUGAR : 'Unknown';
+                    const calories = res.data.CAL ? res.data.CAL : 'Unknown';
+                    const sodium = res.data.SODIUM ? res.data.SODIUM : 'Unknown';
+                    const protein = res.data.PROTEIN ? res.data.PROTEIN.toFixed(2) : 'Unknown';
+                    const cholesterol = res.data.CHOLESTEROL ? res.data.CHOLESTEROL : 'Unknown';
+
                     this.setState(state => ({
                         expanded : !state.expanded,
-                        instructions: res.data.instructions,
-                        ingredients: res.data.ingredients
+                        calories: calories,
+                        sodium: sodium,
+                        protein: protein,
+                        sugar: sugar,
+                        cholesterol: cholesterol
                     }));
                 });
         } else {
             this.setState(state => ({
                 expanded: !state.expanded,
-                instructions: '',
-                ingredients: ''
+                calories: 0,
+                protein: 0,
+                sodium: 0,
+                cholesterol: 0,
+                sugar: 0
             }));
         }
     }
 
     render() {
-        var actionStyle = {}
+        let actionStyle = {}
+        let checkboxIcon;
         if (this.state.expanded) {
             actionStyle.transform = 'rotate(180deg)';
         } else {
             actionStyle.transform = 'rotate(0deg)';
+        }
+        if (this.state.added) {
+            checkboxIcon = <CheckBoxTwoTone />;
+        } else {
+            checkboxIcon = <CheckBoxOutlineBlankTwoTone />;
         }
         return (
             <div style={{ paddingBottom: '10px' }}>
                 <Card>
                     <CardContent>
                         <Typography  variant="h5" component="h2">
-                            {this.props.title}
+                            {this.props.name}
                         </Typography>
                     </CardContent>
                     <CardActions className={classes.actions} disableActionSpacing>
@@ -93,21 +123,39 @@ class RecipeCard extends React.Component {
                             aria-expanded={this.state.expanded}
                             aria-label="Show more"
                         >
-                            <ExpandMoreIcon />
+                            <ExpandMore />
+                        </IconButton>
+                        <IconButton
+                            className={classes.expand}
+                            style = {{transform : 'rotate(0deg)'}}
+                            onClick={this.handleAddClick}
+                            aria-label="Add to fridge"
+                        >
+                            {checkboxIcon}
                         </IconButton>
                     </CardActions>
                     <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
                         <CardContent>
-                            <Typography paragraph>Ingredients</Typography>
-                            <Typography paragraph>
-                                {this.state.ingredients}
-                            </Typography>
-                            <Typography paragraph>
-                                Instructions
-                            </Typography>
-                            <Typography paragraph>
-                                {this.state.instructions}
-                            </Typography>
+                            <List
+                                component="nav"
+                                subheader={<ListSubheader component='div'>Nutrition Facts</ListSubheader>}
+                            >
+                                <ListItem>
+                                    <ListItemText primary='Calories' secondary={this.state.calories} />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText primary='Sugar' secondary={this.state.sugar} />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText primary='Protein' secondary={this.state.protein} />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText primary='Sodium' secondary={this.state.sodium} />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText primary='Cholesterol' secondary={this.state.sugar} />
+                                </ListItem>
+                            </List>
                         </CardContent>
                     </Collapse>
                 </Card>

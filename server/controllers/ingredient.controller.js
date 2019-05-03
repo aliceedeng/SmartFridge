@@ -19,6 +19,9 @@ const fuzzy = true;
 const getAll = true;
 
 
+/*
+ * Deprecated maybe in place of getFacts?
+ */
 export async function get(req, res, next) {
   try {
     const context = {};
@@ -42,6 +45,26 @@ export async function get(req, res, next) {
 }
 
 /*
+ * Returns a json object containing nutritional facts for a single
+ * ingredient given the id of that ingredient
+ *
+ * NOTE: SHOULD BE UPDATED TO HANDLE NO-MATCH SEARCHES APPROPRIATELY
+ */
+export async function getFacts(req, res, next) {
+  try {
+    let id = req.params.id;
+    id = parseInt(id);
+    const facts = await ingredient.getFacts(id);
+    if (facts.length !== 0) {
+      res.status(200).json(facts[0]);
+    } else {
+      res.status(404).end();
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+/*
  * Returns array of ingredients as {'name', 'USDA_ID'} objects
  *
  * Should be updated to handle no-match searches appropriately
@@ -58,7 +81,7 @@ export async function getByName(req, res, next) {
         rows = await ingredient.getByName(name);
     }
     if (fuzzy) {
-        var fuseObj = new Fuse(rows, fuseOptions);
+        const fuseObj = new Fuse(rows, fuseOptions);
         rows = fuseObj.search(name);
     }
     if (rows.length > len) {

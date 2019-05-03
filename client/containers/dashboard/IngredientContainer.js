@@ -52,12 +52,17 @@ class RecipeDashboard extends Component {
     getText(newPress) { // key press: Enter
         if (newPress.keyCode === 13) {
             const ingredient = this.searchText;
-            // MODIFY AS NECESSARY USING ARG
-            const length = 20;
+            // MODIFY AS NECESSARY WITH STATE VALUE / PROPS VALUE
+            const length = 50;
             let request = '/api/ingredient/name/' + ingredient + '?len=' + length;
             axios.get(request)
                 .then(res => {
-                    this.setState({ recipes: res.data, hasRecipes: true });
+                    this.setState({
+                        ingredients: res.data,
+                        hasIngredientResults: true,
+                        hasRecipeResults: false,
+                        recipes: []
+                    });
                 });
         }
     }
@@ -67,9 +72,12 @@ class RecipeDashboard extends Component {
         let display;
         display = <SearchCard storeText={this.storeText} getText={this.getText} ingredient={true} />;
 
-        let recipeCards;
-        if (this.state.hasRecipes) {
-            recipeCards = <CardList recipeList={this.state.recipes} />;
+        let resultsCards;
+        if (this.state.hasRecipeResults) {
+            resultsCards = <CardList resultsData={this.state.recipes} ingredient={false} />;
+        }
+        if (this.state.hasIngredientResults) {
+            resultsCards = <CardList resultsData={this.state.ingredients} ingredient={true} />
         }
 
         return (
@@ -82,7 +90,7 @@ class RecipeDashboard extends Component {
                         {display}
                     </div>
                     <div>
-                        { recipeCards }
+                        { resultsCards }
                     </div>
                 </div>
             </div >

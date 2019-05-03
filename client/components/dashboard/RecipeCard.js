@@ -50,7 +50,6 @@ class RecipeCard extends React.Component {
     handleExpandClick = () => {
         if (!this.state.expanded) {
             var request = '/api/recipe/rid/' + this.props.rid;
-            console.log(request);
             axios.get(request)
                 .then(res => {
                     this.setState(state => ({
