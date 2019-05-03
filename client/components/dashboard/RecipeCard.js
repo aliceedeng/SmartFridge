@@ -10,6 +10,7 @@ import Divider from '@material-ui/core/Divider';
 import classnames from 'classnames';
 import axios from 'axios';
 import { withStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
 
 var classes = {
     actions: 'actions',
@@ -68,6 +69,8 @@ class RecipeCard extends React.Component {
         }
     }
 
+    //<div style={{ paddingBottom: '10px' }}>
+
     render() {
         var actionStyle = {}
         if (this.state.expanded) {
@@ -83,10 +86,11 @@ class RecipeCard extends React.Component {
         }
 
         return (
-            <div style={{ paddingBottom: '10px' }}>
+            
+            <Grid item xs={4}>
+
                 <Card>
                     <CardContent>
-                    
                         <Typography  variant="h5" component="h2">
                             {this.props.title}
                         </Typography>
@@ -123,7 +127,7 @@ class RecipeCard extends React.Component {
                         </CardContent>
                     </Collapse>
                 </Card>
-            </div>
+            </Grid>
         );
     }
 }

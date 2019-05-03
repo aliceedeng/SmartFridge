@@ -6,6 +6,24 @@ import axios from 'axios';
 import SearchCard from '../../components/dashboard/SearchCard';
 import CardList from '../../components/dashboard/CardList';
 import Header from '../../components/common/header/Header';
+import Grid from '@material-ui/core/Grid';
+
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    padding: theme.spacing.unit * 2,
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
+});
+
+const divStyle = {
+    paddingTop:'20px',
+    paddingLeft:'30px',
+    paddingRight:'30px'
+}
 
 class RecipeDashboard extends Component {
     /*
@@ -72,8 +90,11 @@ return (
                     <div>
                         {display}
                     </div>
-                    <div>
-                        { recipeCards }
+                    <div style= {divStyle}>
+                       
+                                { recipeCards }
+                            
+                    
                     </div>
                 </div>
             </div >

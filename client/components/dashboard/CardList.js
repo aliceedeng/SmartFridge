@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import RecipeCard from './RecipeCard.js';
 import IngredientCard from './IngredientCard.js';
+import Grid from '@material-ui/core/Grid';
 
 const styles = {
   card: {
@@ -35,13 +36,15 @@ const CardList = ({ resultsData, ingredient } ) => {
       cardsArray = resultsData.map((recipe, index) => (
           <RecipeCard key={index} title={recipe.TITLE} rid={recipe.RID} picLink={recipe.PICTURE_LINK}/>
       ));
+
+     
   }
 
   return (
-
-    <div style={{ paddingTop: '20px', paddingLeft: '30px', paddingRight: '600px' }}>
-      {cardsArray}
-    </div>
+      <Grid container spacing={24}>
+        {cardsArray}
+      </Grid>
+    
 
 
   );
