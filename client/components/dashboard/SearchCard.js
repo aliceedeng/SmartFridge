@@ -3,6 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import Divider from '@material-ui/core/Divider';
 
 const styles = {
   card: {
@@ -20,6 +21,14 @@ const styles = {
     marginBottom: 12,
   },
 };
+
+const buttonStyle = {
+    backgroundColor: '#f4bf42',
+    border: 'None',
+    color: 'White',
+    fontSize: '80 px',
+    borderRadius:'25px'
+}
 
 const getFlavor = function (isIngredient) {
     if (isIngredient) {
@@ -56,6 +65,18 @@ class SearchCard extends Component {
     const storeText = this.props.storeText;
     const getText = this.props.getText;
     
+    var cardAdditions
+
+    if (this.props.ingredient) {
+    	//will update this with fridge ingredients later
+    	cardAdditions = <span></span> 
+    } else {
+    	cardAdditions = <CardActions>
+                  	<button style={buttonStyle}>surprise me</button>
+                    <button style={buttonStyle}>high protein</button>
+                  </CardActions>
+    }
+
 return (
 
         <div style={getStyle(this.props.ingredient)}>
@@ -70,9 +91,8 @@ return (
                                onKeyDown={(e) => getText(e)} onChange={(e) => storeText(e)}></TextField>
 
                   </CardContent>
-                  <CardActions>
-
-                  </CardActions>
+                  <Divider variant="middle" />
+                  {cardAdditions}
                 </Card>
             </div>
 

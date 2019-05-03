@@ -6,6 +6,7 @@ import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CardActions from '@material-ui/core/CardActions';
+import Divider from '@material-ui/core/Divider';
 import classnames from 'classnames';
 import axios from 'axios';
 import { withStyles } from '@material-ui/core/styles';
@@ -71,17 +72,26 @@ class RecipeCard extends React.Component {
         var actionStyle = {}
         if (this.state.expanded) {
             actionStyle.transform = 'rotate(180deg)';
+            var ingredients = this.state.ingredients;
+            console.log(this.state.ingredients)
+            
+            var ingrList = ingredients.map(function(ingr, index){
+                                            return <li key={ index }>{ingr}</li>;
+                                          });
         } else {
             actionStyle.transform = 'rotate(0deg)';
         }
+
         return (
             <div style={{ paddingBottom: '10px' }}>
                 <Card>
                     <CardContent>
+                    
                         <Typography  variant="h5" component="h2">
                             {this.props.title}
                         </Typography>
                     </CardContent>
+                    <Divider variant="middle" />
                     <CardActions className={classes.actions} disableActionSpacing>
                         <IconButton
                             className={classnames(classes.expand, {
@@ -99,7 +109,10 @@ class RecipeCard extends React.Component {
                         <CardContent>
                             <Typography paragraph>Ingredients</Typography>
                             <Typography paragraph>
-                                {this.state.ingredients}
+                                <ul>
+                                    {ingrList}
+                                </ul>
+                                
                             </Typography>
                             <Typography paragraph>
                                 Instructions

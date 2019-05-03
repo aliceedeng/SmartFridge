@@ -39,7 +39,7 @@ const CardList = ({ resultsData, ingredient } ) => {
 
   return (
 
-    <div style={{ paddingTop: '0px', paddingLeft: '600px', paddingRight: '100px' }}>
+    <div style={{ paddingTop: '20px', paddingLeft: '30px', paddingRight: '600px' }}>
       {cardsArray}
     </div>
 
