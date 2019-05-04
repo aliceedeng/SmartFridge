@@ -32,19 +32,28 @@ async function find(context) {
   return result.rows;
 }
 
+const wrapRecipeQueryWithImages =function(subquery) {
+    let query = `SELECT R.TITLE AS TITLE, R.RID AS RID, I.LINK AS PICTURE_LINK FROM `;
+    let subqueryWrapped = `(` + subquery + `) R`;
+    query += subqueryWrapped;
+    query = query + ` LEFT JOIN IMAGES I ON I.RID = R.RID`;
+    return query;
 
+}
 // original query: let query = `SELECT Title, dbms_lob.substr(INSTRUCTIONS,2000,1),` +
 //   `dbms_lob.substr(INSTRUCTIONS,2000,2001) FROM RECIPES WHERE Title LIKE '` + name + `%'` +
 //   ` AND ROWNUM <= ` + count;
 //   ` AND ROWNUM <= ` + count;
-//   BUG: UPDATE TO TRANSFORM PICTURE_LINK HASH TO TRUE PICTURE LINK
+//   SELECT Title, RID, PICTURE_LINK FROM RECIPES WHERE Title LIKE 'Chocolate%' AND ROWNUM <= 20
 async function getByName(name, count) {
-  let query = `SELECT Title, RID, PICTURE_LINK FROM RECIPES WHERE Title LIKE '` + name + `%'` +
-   ` AND ROWNUM <= ` + count;
+    let fixName = name.replace(`'`, `''`);
+    let subquery = `SELECT Title, RID FROM RECIPES WHERE Title LIKE '` + fixName + `%'` +
+    ` AND ROWNUM <= ` + count;
+    let query = wrapRecipeQueryWithImages(subquery);
+    console.log(query);
+    const result = await database.simpleExecute(query, {});
 
-  const result = await database.simpleExecute(query, {});
-
-return result.rows;
+    return result.rows;
 }
 
 // gets string that matches specific ingredient

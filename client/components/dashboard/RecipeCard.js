@@ -11,12 +11,27 @@ import classnames from 'classnames';
 import axios from 'axios';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import CardMedia from '@material-ui/core/CardMedia';
+import { connect } from 'react-redux';
+
+
+const placeholderImgs = [
+    'https://payload.cargocollective.com/1/14/466639/13802007/cake_black_1250.jpg',
+    'https://payload.cargocollective.com/1/14/466639/13802007/winecheesev02-03_1250.jpg',
+    'https://payload.cargocollective.com/1/14/466639/13802007/food_stomachache-01_1250.png',
+    'https://payload.cargocollective.com/1/14/466639/13802007/pancakes-21-21_5_1250.png',
+    'https://payload.cargocollective.com/1/14/466639/13802007/fruitti_tutti-new-05_1250.jpg'
+];
 
 var classes = {
     actions: 'actions',
     expand: 'expand',
     expandOpen: 'expandOpen',
 
+};
+const mediaStyle = {
+    height: 0,
+    paddingTop: '56.25%'
 };
 
 const styles = theme => ({
@@ -72,19 +87,36 @@ class RecipeCard extends React.Component {
     //<div style={{ paddingBottom: '10px' }}>
 
     render() {
-        var actionStyle = {}
+        var actionStyle = {};
+        let ingrList;
         if (this.state.expanded) {
             actionStyle.transform = 'rotate(180deg)';
-            var ingredients = this.state.ingredients;
-            console.log(this.state.ingredients)
-            
-            var ingrList = ingredients.map(function(ingr, index){
-                                            return <li key={ index }>{ingr}</li>;
+            let ingredients = this.state.ingredients;
+
+            ingrList = ingredients.map(function(ingr, index){
+
+                return <li key={ index }>{ingr}</li>;
                                           });
         } else {
             actionStyle.transform = 'rotate(0deg)';
         }
+        let trueLink;
+        if (this.props.picLink) {
+            if (this.props.picLink.includes('nophoto')) {
+                const rand = Math.floor(Math.random() * 5);
+                trueLink = placeholderImgs[rand];
+            } else {
+                trueLink = this.props.picLink;
+            }
+        } else {
+            const rand = Math.floor(Math.random() * 5);
+            trueLink = placeholderImgs[rand];
+        }
 
+        let img = <CardMedia
+            style = {mediaStyle}
+            image={trueLink}
+            title="Recipe image"/>;
         return (
             
             <Grid item xs={4}>
@@ -95,6 +127,7 @@ class RecipeCard extends React.Component {
                             {this.props.title}
                         </Typography>
                     </CardContent>
+                    {img}
                     <Divider variant="middle" />
                     <CardActions className={classes.actions} disableActionSpacing>
                         <IconButton
@@ -132,9 +165,10 @@ class RecipeCard extends React.Component {
     }
 }
 
-/*
-<Typography component="p">
-            {this.props.instructions}
-</Typography>
- */
-export default RecipeCard;
+function mapStateToProps(state) {
+    return ({
+        fridgeIngredients: state.fridge.contents
+    });
+}
+
+export default connect(mapStateToProps)(RecipeCard);
