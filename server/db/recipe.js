@@ -91,6 +91,27 @@ async function getByIngredientsOr(id) {
     return result.rows;
 }
 
+// query ingredients by OR, sort ingredients by the count
+// of how many ingredients matched
+async function getMostRelevantByIngredients(id) {
+    let idString = '(';
+    for (let i = 0; i < id.length; i++) {
+        idString += id[i];
+        if (i < (id.length - 1)) {
+            idString += ', ';
+        }
+    }
+    idString += ')';
+    let query = `SELECT RID, R.TITLE, R.PICTURE_LINK ` +
+    `FROM INGREDIENTS I NATURAL JOIN RECIPES R ` +
+    `WHERE I.USDA_ID IN` + idString +'AND ROWNUM <=50';
+
+    console.log(query);
+    const result = await database.simpleExecute(query, {});
+
+    return result.rows;
+}
+
 async function getHighProtein() {
   let query = `SELECT DISTINCT(Title)
                 FROM

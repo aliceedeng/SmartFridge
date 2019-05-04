@@ -17,6 +17,13 @@ const buttonStyle = {
     fontSize: '30 px'
 };
 
+const titleStyle = {
+    color: 'White',
+    fontSize:'20px',
+    marginLeft:'auto',
+    marginRight:'auto'
+}
+
 
 const styles = theme => ({
     appBar: {
@@ -57,6 +64,7 @@ const RecipeButton = withRouter(({ history }) => (
     </button>
 ));
 
+
 const IngredientButton = withRouter(({ history }) => (
     <button
         style={buttonStyle}
@@ -95,8 +103,8 @@ return (
                     <Toolbar>
                         <RecipeButton />
                         <IngredientButton />
-                        <Typography type="title" className={classes.flex}>
-                            DumbFridge
+                        <Typography type="title" style={titleStyle}>
+                            smart fridge
                         </Typography>
                         <CookbookButton/>
                     </Toolbar>

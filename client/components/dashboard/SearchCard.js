@@ -74,8 +74,8 @@ const getStyle = function(isIngredient) {
         paddingTop: '100px'
   };
   if (isIngredient) {
-    style.paddingRight = '30px';
-    style.paddingLeft = '800px';
+    style.paddingRight = '800px';
+    style.paddingLeft = '30px';
   } else {
     style.paddingRight = '800px';
     style.paddingLeft = '30px';
