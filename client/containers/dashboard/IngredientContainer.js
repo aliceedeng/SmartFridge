@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 import SearchCard from '../../components/dashboard/SearchCard';
 import CardList from '../../components/dashboard/CardList';
 import Header from '../../components/common/header/Header';
+import {bindActionCreators} from 'redux';
+import {clearFridge, removeIngredient} from '../../actions/ingredientAction';
 
 class IngredientDashboard extends Component {
     /*
@@ -32,6 +34,7 @@ class IngredientDashboard extends Component {
         super(props);
         this.storeText = this.storeText.bind(this);
         this.getText = this.getText.bind(this);
+        this.handleSearch = this.handleSearch.bind(this);
         this.searchText = '';
         // this.recipes = new Array(10);
         this.state = {
@@ -42,27 +45,37 @@ class IngredientDashboard extends Component {
         };
     }
 
-    /*
-     * Adds an item to the fridge with a given name and id -- not sure this
-     * should even be here with redux refactoring
-     *
-     * DEPRECATED
-     */
-    addToFridge(name, id) {
-        const ingredient = {
-            name: name,
-            id: id
-        };
-        this.setState(state => ({
-            ingredients:[state.ingredients, ingredient]
-        }));
-    }
-
     // Updates search text based on latest user action
     storeText(newText) {
         this.searchText = newText.target.value;
     }
 
+    // executes search query for recipes given current fridge contents
+    handleSearch(searchType) {
+        let request = 'api/recipe/';
+        if (searchType === 'or') {
+            request += 'include';
+        }
+        if (this.props.fridgeContents.length !== 0) {
+            request += '?';
+            this.props.fridgeContents.forEach((ingredient, index) => {
+                request = request + 'id=' + ingredient.id;
+                if (index !== this.props.fridgeContents.length - 1) {
+                    request += '&';
+                }
+            });
+            console.log(request);
+            axios.get(request)
+                .then(res => {
+                    this.setState({
+                        hasRecipeResults: true,
+                        hasIngredientResults: false,
+                        recipes: res.data,
+                        ingredients: []
+                    });
+                });
+        }
+    }
     // queries server for recipes
     // NOTE: May be updated to specify page length
     getText(newPress) { // key press: Enter
@@ -89,6 +102,7 @@ class IngredientDashboard extends Component {
         display = <SearchCard
             storeText={this.storeText}
             getText={this.getText}
+            handleSearch={this.handleSearch}
             ingredient={true}
         />;
 
@@ -99,7 +113,8 @@ class IngredientDashboard extends Component {
                 ingredient={false} />;
         }
         if (this.state.hasIngredientResults) {
-            resultsCards = <CardList resultsData={this.state.ingredients} ingredient={true} />;
+            resultsCards = <CardList resultsData={this.state.ingredients}
+                                     ingredient={true} />;
         }
 
         return (
@@ -122,4 +137,13 @@ class IngredientDashboard extends Component {
 
 }
 
-export default IngredientDashboard;
+function mapStateToProps(state) {
+    return(
+        {
+            fridgeContents: state.fridge.contents
+        }
+    );
+}
+
+
+export default connect(mapStateToProps)(IngredientDashboard);

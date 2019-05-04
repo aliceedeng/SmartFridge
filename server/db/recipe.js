@@ -19,7 +19,8 @@ async function instructions(rid) {
     FROM RECIPES
     WHERE RID='` + rid + `'`;
     const result = await database.simpleExecute(query);
-    return result.rows[0].INSTRUCTIONS;
+    
+return result.rows[0].INSTRUCTIONS;
 }
 
 async function find(context) {
@@ -31,7 +32,8 @@ async function find(context) {
   return result.rows;
 }
 
-//original query: let query = `SELECT Title, dbms_lob.substr(INSTRUCTIONS,2000,1),` +
+
+// original query: let query = `SELECT Title, dbms_lob.substr(INSTRUCTIONS,2000,1),` +
 //   `dbms_lob.substr(INSTRUCTIONS,2000,2001) FROM RECIPES WHERE Title LIKE '` + name + `%'` +
 //   ` AND ROWNUM <= ` + count;
 //   ` AND ROWNUM <= ` + count;
@@ -44,18 +46,25 @@ async function getByName(name, count) {
 
 return result.rows;
 }
-
+// consider caching on first search with a specific fridge
 // this doesn't work for some reason
 async function getByIngredientsOr(id) {
-  let query = `SELECT *
-               FROM INGREDIENTS
-               WHERE ROWNUM <= 2`;
+    let idString = '(';
+    for (let i = 0; i < id.length; i++) {
+        idString += `'` + id[i] + `'`;
+        if (i < (id.length - 1)) {
+            idString += ',';
+        }
+    }
+    idString += ')';
+    let query = `SELECT DISTINCT(R.RID, R.TITLE, R.PICTURE_LINK) ` +
+    `FROM INGREDIENTS I NATURAL JOIN RECIPES R ` +
+    `WHERE I.USDA_ID IN` + idString;
 
-   console.log(query);
+    console.log(query);
+    const result = await database.simpleExecute(query, {});
 
-   const result = await database.simpleExecute(query, {});
-   
-return result.rows;
+    return result.rows;
 }
 
 async function getHighProtein() {

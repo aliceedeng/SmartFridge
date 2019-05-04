@@ -8,6 +8,8 @@ import CardContent from '@material-ui/core/CardContent';
 import {clearFridge, removeIngredient} from '../../actions/ingredientAction';
 import {CancelTwoTone} from '@material-ui/icons';
 import IconButton from '@material-ui/core/IconButton'
+import Button from '@material-ui/core/Button';
+
 const styles = {
   card: {
     minWidth: 275,
@@ -87,11 +89,17 @@ class SearchCard extends Component {
                 key={ingredient.id}
             >{ingredient.name}</li>
         ));
-        actions = (<IconButton
-                        onClick={(e) => this.props.clearFridge()}
-                        aria-label="Clear items in fridge">
-                        <CancelTwoTone/>
-                    </IconButton>);
+        actions = (<CardActions className={'actions'}>
+                <IconButton
+                    onClick={(e) => this.props.clearFridge()}
+                    aria-label="Clear items in fridge">
+                    <CancelTwoTone/>
+                </IconButton>
+                <Button variant='contained'
+                        className='button'
+                        onClick={(e) => this.props.handleSearch('or')}
+                        color='primary'>Search Recipe</Button>
+            </CardActions>);
     } else {
         fridge = <span/>;
         actions = <span/>;
@@ -109,12 +117,10 @@ return (
                       </span>
 
                     <TextField variant="outlined" placeholder={getFlavor(this.props.ingredient)}
-                               onKeyDown={(e) => getText(e)} onChange={(e) => storeText(e)}></TextField>
+                               onKeyDown={(e) => getText(e)} onChange={(e) => storeText(e)}/>
                       {fridge}
                   </CardContent>
-                  <CardActions className={'actions'}>
-                      {actions}
-                  </CardActions>
+                    {actions}
                 </Card>
             </div>
 

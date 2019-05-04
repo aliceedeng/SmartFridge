@@ -41,10 +41,14 @@ export async function getByName(req, res, next) {
   }
 }
 
+// given a list of ingredient ids, returns all recipes that
+// contain at least 1 ingredient
 export async function getByIngredientsOr(req, res, next) {
   try {
-    var id = req.params.id;
-
+    let id = req.query.id;
+    if (!Array.isArray(id)) {
+      id = [id];
+    }
     const rows = await recipe.getByIngredientsOr(id);
 
     if (req.params.id) {
