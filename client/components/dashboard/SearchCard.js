@@ -107,11 +107,15 @@ class SearchCard extends Component {
                 <Button variant='contained'
                         className='button'
                         onClick={(e) => this.props.handleSearch('or')}
-                        color='primary'>Search Recipe</Button>
+                        color='primary'>Search Recipe (or)</Button>
+                <Button variant='contained'
+                        className='button'
+                        onClick={(e) => this.props.handleSearch('and')}
+                        color='secondary'>Search Recipe (and)</Button>
             </CardActions>);
     } else {
         fridge = <span/>;
-        actions = (<CardActions>
+        actions = (<CardActions className={'actions'}>
                   	<button style={buttonStyle}>surprise me</button>
                     <button style={buttonStyle}>high protein</button>
                   </CardActions>);

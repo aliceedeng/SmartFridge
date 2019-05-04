@@ -46,18 +46,42 @@ async function getByName(name, count) {
 
 return result.rows;
 }
+
+// gets string that matches specific ingredient
+const ingredientMatchString = function(id) {
+    let query = `SELECT RID FROM INGREDIENTS WHERE USDA_ID=` + id;
+
+    return query;
+}
+
+// gets recipes that contain all ingredients in a list of ingredient ids
+// benchmark current performance
+async function getByIngredientsAnd(id) {
+    let subquery = '';
+    for (let i = 0; i < id.length; i++) {
+        subquery += ingredientMatchString(id[i]);
+        if (i < id.length - 1) {
+            subquery += ` INTERSECT `;
+        }
+    }
+    let query = `SELECT R.RID, R.TITLE, R.PICTURE_LINK FROM RECIPES R WHERE R.RID IN (` + subquery + `)`;
+    const result = await database.simpleExecute(query, {});
+    console.log(result);
+    return result.rows;
+}
+
 // consider caching on first search with a specific fridge
-// this doesn't work for some reason
+// current variant --- query takes an average of 38 seconds
 async function getByIngredientsOr(id) {
     let idString = '(';
     for (let i = 0; i < id.length; i++) {
-        idString += `'` + id[i] + `'`;
+        idString += id[i];
         if (i < (id.length - 1)) {
-            idString += ',';
+            idString += ', ';
         }
     }
     idString += ')';
-    let query = `SELECT DISTINCT(R.RID, R.TITLE, R.PICTURE_LINK) ` +
+    let query = `SELECT DISTINCT(RID), R.TITLE, R.PICTURE_LINK ` +
     `FROM INGREDIENTS I NATURAL JOIN RECIPES R ` +
     `WHERE I.USDA_ID IN` + idString;
 
@@ -93,6 +117,7 @@ async function getRandom() {
 return result.rows;
 }
 
+module.exports.getByIngredientsAnd = getByIngredientsAnd;
 module.exports.find = find;
 module.exports.instructions = instructions;
 module.exports.getByName = getByName;

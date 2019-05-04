@@ -15,8 +15,8 @@ router.route('/include')
   .get(recipes.getByIngredientsOr);
 
 // route for retrieving recipes by anding ingredient ids
-// router.route('/exclude')
-//    .get(recipes.getByIngredientsAnd);
+router.route('/exclude')
+    .get(recipes.getByIngredientsAnd);
 
 router.route('/protein/')
   .get(recipes.getHighProtein);

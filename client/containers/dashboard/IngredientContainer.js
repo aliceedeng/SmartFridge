@@ -64,6 +64,8 @@ class IngredientDashboard extends Component {
         let request = 'api/recipe/';
         if (searchType === 'or') {
             request += 'include';
+        } else if (searchType === 'and') {
+            request += 'exclude';
         }
         if (this.props.fridgeContents.length !== 0) {
             request += '?';
@@ -95,6 +97,7 @@ class IngredientDashboard extends Component {
             let request = '/api/ingredient/name/' + ingredient + '?len=' + length;
             axios.get(request)
                 .then(res => {
+                    console.log(res.data);
                     this.setState({
                         ingredients: res.data,
                         hasIngredientResults: true,
@@ -117,11 +120,13 @@ class IngredientDashboard extends Component {
 
         let resultsCards;
         if (this.state.hasRecipeResults) {
+            console.log('recipes');
             resultsCards = <CardList
                 resultsData={this.state.recipes}
                 ingredient={false} />;
         }
         if (this.state.hasIngredientResults) {
+            console.log('ingredients');
             resultsCards = <CardList resultsData={this.state.ingredients}
                                      ingredient={true} />;
         }
