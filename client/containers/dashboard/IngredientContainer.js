@@ -3,7 +3,6 @@ import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
 import { connect } from 'react-redux';
 
-
 // Import custom components
 import SearchCard from '../../components/dashboard/SearchCard';
 import CardList from '../../components/dashboard/CardList';
