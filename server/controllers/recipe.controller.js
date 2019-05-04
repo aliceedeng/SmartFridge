@@ -76,7 +76,22 @@ export async function getByIngredientsAnd(req, res, next) {
 export async function getByIngredientsOr(req, res, next) {
   try {
     if (req.query.id) {
-        const rows = await getByIngredients('or', req.query.id);
+        let rows = await getByIngredients('or', req.query.id);
+
+        //get unique elements
+        let rowSet = new Set()
+        
+        //console.log(rows);
+        for(let item of rows) {
+          //console.log(item)
+          rowSet.add(item)
+        }
+
+        //rows.forEach((item) => rowSet.add(item));
+        rows = Array.from(rowSet)
+
+        console.log("hi");
+
         res.status(200).json(rows);
     } else {
       res.status(404).end();

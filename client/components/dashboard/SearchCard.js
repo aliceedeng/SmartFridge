@@ -46,6 +46,14 @@ const clearFridgeStyle = {
     borderRadius:'25px'
 }
 
+const buttonStyleAnd = {
+	backgroundColor: '#a86bbc',
+	border: 'None',
+    color: 'White',
+    fontSize: '80 px',
+    borderRadius:'25px'
+}
+
 
 
 const chipStyle = {
@@ -136,11 +144,11 @@ class SearchCard extends Component {
                 </button>
                 <button style={buttonStyle}
                         onClick={(e) => this.props.handleSearch('or')}
-                        >find me a recipe</button>
-                <Button variant='contained'
+                        >find me a recipe (one fridge ingredient)</button>
+                <button style={buttonStyleAnd}
                         className='button'
                         onClick={(e) => this.props.handleSearch('and')}
-                        color='secondary'>Search Recipe (and)</Button>
+                        >find me a recipe (all fridge ingredients)</button>
             </CardActions>);
     } else {
         fridge = <span/>;

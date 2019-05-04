@@ -66,7 +66,7 @@ async function getByIngredientsAnd(id) {
     }
     let query = `SELECT R.RID, R.TITLE, R.PICTURE_LINK FROM RECIPES R WHERE R.RID IN (` + subquery + `)`;
     const result = await database.simpleExecute(query, {});
-    console.log(result);
+    console.log(query);
     return result.rows;
 }
 
@@ -81,9 +81,9 @@ async function getByIngredientsOr(id) {
         }
     }
     idString += ')';
-    let query = `SELECT DISTINCT(RID), R.TITLE, R.PICTURE_LINK ` +
+    let query = `SELECT RID, R.TITLE, R.PICTURE_LINK ` +
     `FROM INGREDIENTS I NATURAL JOIN RECIPES R ` +
-    `WHERE I.USDA_ID IN` + idString;
+    `WHERE I.USDA_ID IN` + idString +'AND ROWNUM <=50';
 
     console.log(query);
     const result = await database.simpleExecute(query, {});
