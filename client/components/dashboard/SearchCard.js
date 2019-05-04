@@ -2,8 +2,14 @@ import React, {Component} from 'react';
 import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
+import {clearFridge, removeIngredient} from '../../actions/ingredientAction';
+import {CancelTwoTone} from '@material-ui/icons';
+import IconButton from '@material-ui/core/IconButton'
+import Button from '@material-ui/core/Button';
 
 const styles = {
   card: {
@@ -51,11 +57,31 @@ const getStyle = function(isIngredient) {
   }
 
   return style;
+};
+
+
+function mapStateToProps(state) {
+    return(
+        {
+            fridgeContents: state.fridge.contents
+        }
+    );
+}
+
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+        clearFridge: clearFridge,
+        removeIngredient: removeIngredient
+    }, dispatch);
 }
 
 class SearchCard extends Component {
   /*
   props:
+    fridgeContents: array giving the current ingredients in the fridge
+    clearFridge: function for clearing the contents of the fridge (given no arguments)
+    removeIngredient: function for removing a particular ingredient from the fridge (given id as argument)
     storeText: Function for updating text field of parent component with most recently entered text in search bar
     getText: Function for querying database for information related to current value in text field
     ingredient: boolean giving whether this search card is for searching ingredients (alternatively recipes)
@@ -64,19 +90,32 @@ class SearchCard extends Component {
   render() {
     const storeText = this.props.storeText;
     const getText = this.props.getText;
-    
-    var cardAdditions
-
+    let fridge;
+    let actions;
     if (this.props.ingredient) {
-    	//will update this with fridge ingredients later
-    	cardAdditions = <span></span> 
+        fridge = this.props.fridgeContents.map(ingredient => (
+            <li onClick={(e) => this.props.removeIngredient(ingredient.id)}
+                key={ingredient.id}
+            >{ingredient.name}</li>
+        ));
+        actions = (<CardActions className={'actions'}>
+                <IconButton
+                    onClick={(e) => this.props.clearFridge()}
+                    aria-label="Clear items in fridge">
+                    <CancelTwoTone/>
+                </IconButton>
+                <Button variant='contained'
+                        className='button'
+                        onClick={(e) => this.props.handleSearch('or')}
+                        color='primary'>Search Recipe</Button>
+            </CardActions>);
     } else {
-    	cardAdditions = <CardActions>
+        fridge = <span/>;
+        actions = (<CardActions>
                   	<button style={buttonStyle}>surprise me</button>
                     <button style={buttonStyle}>high protein</button>
-                  </CardActions>
+                  </CardActions>);
     }
-
 return (
 
         <div style={getStyle(this.props.ingredient)}>
@@ -88,11 +127,11 @@ return (
                       </span>
 
                     <TextField variant="outlined" placeholder={getFlavor(this.props.ingredient)}
-                               onKeyDown={(e) => getText(e)} onChange={(e) => storeText(e)}></TextField>
-
+                               onKeyDown={(e) => getText(e)} onChange={(e) => storeText(e)}/>
+                      {fridge}
                   </CardContent>
-                  <Divider variant="middle" />
-                  {cardAdditions}
+                  <Divider variant='middle' />
+                    {actions}
                 </Card>
             </div>
 
@@ -102,32 +141,4 @@ return (
 
 }
 
-/*
-const SearchCard = () => {
-
-    var getRecipe = this.props.getRecipe;
-    return (
-
-        <div style={{paddingTop:'100px', paddingLeft:'30px', paddingRight:'800px'}}>
-                <Card>
-                	
-                  <CardContent>
-                      <span>
-                      feeling hungry? <br /><br />
-                      </span>
-
-                    <TextField variant="outlined" placeholder="enter a dish" onChange={(e) => getRecipe(e)}></TextField>
-
-                  </CardContent>
-                  <CardActions>
-
-                  </CardActions>
-                </Card>
-            </div>
-
-
-    );
-};
-*/
-
-export default SearchCard;
+export default connect(mapStateToProps, mapDispatchToProps)(SearchCard);

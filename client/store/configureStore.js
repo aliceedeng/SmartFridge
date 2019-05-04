@@ -3,7 +3,7 @@ import thunkMiddleware from 'redux-thunk';
 import {routerMiddleware} from 'connected-react-router';
 import logger from 'redux-logger';
 
-import createRootReducer from '../reducers';
+import createRootReducer from '../reducers/index';
 import history from '../utils/history';
 
 export {history};

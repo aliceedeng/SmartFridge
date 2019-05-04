@@ -3,7 +3,7 @@ import history from '../utils/history';
 /**
  * Import all commonAction as an object.
  */
-import * as commonAction from './commonAction';
+import * as commonAction from './ingredientAction';
 
 /**
  * Import all httpService as an object.
