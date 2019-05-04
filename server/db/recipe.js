@@ -19,7 +19,7 @@ async function instructions(rid) {
     FROM RECIPES
     WHERE RID='` + rid + `'`;
     const result = await database.simpleExecute(query);
-    
+
 return result.rows[0].INSTRUCTIONS;
 }
 
@@ -32,6 +32,15 @@ async function find(context) {
   return result.rows;
 }
 
+/*
+ * Gets all recipes (names and ids) from recipe
+ */
+async function getAll() {
+  let query = `SELECT Title, RID FROM RECIPES`;
+  const result = await database.simpleExecute(query, {});
+
+  return result.rows;
+}
 
 // original query: let query = `SELECT Title, dbms_lob.substr(INSTRUCTIONS,2000,1),` +
 //   `dbms_lob.substr(INSTRUCTIONS,2000,2001) FROM RECIPES WHERE Title LIKE '` + name + `%'` +
@@ -105,7 +114,7 @@ async function getHighProtein() {
   console.log(query);
 
   const result = await database.simpleExecute(query, {});
-  
+
 return result.rows;
 }
 
@@ -113,7 +122,7 @@ async function getRandom() {
   var query = `SELECT * FROM RECIPES WHERE ROWNUM = 1`;
 
   const result = await database.simpleExecute(query, {});
-  
+
 return result.rows;
 }
 

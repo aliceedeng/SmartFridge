@@ -1,5 +1,24 @@
+import Fuse from 'fuse.js';
+
 const recipe = require('../db/recipe.js');
 const ingredient  = require('../db/ingredient.js');
+
+const fuseOptions = {
+    shouldSort: true,
+    tokenize: true, // not sure about this one
+    findAllMatches: false, // not sure about this one
+    threshold: 1.0,
+    location: 1,
+    distance: 1000,
+    maxPatternLength: 64,
+    minMatchCharLength: 1,
+    keys: [
+        'Title'
+    ]
+};
+const fuzzy = true;
+const getAll = true;
+
 
 // ALL SHOULD BE UPDATED TO HAVE CONSISTENT EMPTY RETURN BEHAVIOR
 
@@ -28,15 +47,31 @@ export async function getById(req, res, next) {
 // SHOULD BE CONVERTED TO FUZZY MATCHING
 export async function getByName(req, res, next) {
   try {
-    if (req.params.name && req.query.len) {
-        const len = parseInt(req.query.len);
-        const name = req.params.name;
-        const rows = await recipe.getByName(name, len);
-        res.status(200).json(rows);
+    let name = req.params.name;
+    const len = parseInt(req.query.len);
+    name = name.toLowerCase();
+    let rows = [];
+    if (getAll) {
+        rows = await recipe.getAll();
+    } else {
+        rows = await recipe.getByName(name, len);
+    }
+    if (fuzzy) {
+        const fuseObj = new Fuse(rows, fuseOptions);
+        rows = fuseObj.search(name);
+    }
+    if (rows.length > len) {
+        rows = rows.slice(0, len);
+    }
+
+    if (req.params.name) {
+      if (rows.length === 1) {
+          res.status(200).json(rows[0]);
+      }
+      res.status(200).json(rows);
     } else {
       res.status(404).end();
     }
-
   } catch (err) {
     next(err);
   }
