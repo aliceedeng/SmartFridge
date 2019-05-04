@@ -10,6 +10,7 @@ import {clearFridge, removeIngredient} from '../../actions/ingredientAction';
 import {CancelTwoTone} from '@material-ui/icons';
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button';
+import Chip from '@material-ui/core/Chip';
 
 const styles = {
   card: {
@@ -34,6 +35,22 @@ const buttonStyle = {
     color: 'White',
     fontSize: '80 px',
     borderRadius:'25px'
+}
+
+const clearFridgeStyle = {
+
+	backgroundColor: '#ef56a2',
+	border: 'None',
+    color: 'White',
+    fontSize: '80 px',
+    borderRadius:'25px'
+}
+
+
+
+const chipStyle = {
+	marginBottom: '5px',
+	marginLeft: '5px'
 }
 
 const getFlavor = function (isIngredient) {
@@ -93,21 +110,33 @@ class SearchCard extends Component {
     let fridge;
     let actions;
     if (this.props.ingredient) {
-        fridge = this.props.fridgeContents.map(ingredient => (
+
+        fridge = this.props.fridgeContents.map((data) => (
+        		<Chip key={data.id} 
+	        		label={data.name} 
+	        		onDelete={(e) => this.props.removeIngredient(data.id)} 
+	        		style={chipStyle}
+	        		/>
+        ));
+
+
+        /*
+        this.props.fridgeContents.map(ingredient => (
             <li onClick={(e) => this.props.removeIngredient(ingredient.id)}
                 key={ingredient.id}
             >{ingredient.name}</li>
         ));
+        */
+        
         actions = (<CardActions className={'actions'}>
-                <IconButton
+                <button style={clearFridgeStyle}
                     onClick={(e) => this.props.clearFridge()}
                     aria-label="Clear items in fridge">
-                    <CancelTwoTone/>
-                </IconButton>
-                <Button variant='contained'
-                        className='button'
+                     empty fridge
+                </button>
+                <button style={buttonStyle}
                         onClick={(e) => this.props.handleSearch('or')}
-                        color='primary'>Search Recipe (or)</Button>
+                        >find me a recipe</button>
                 <Button variant='contained'
                         className='button'
                         onClick={(e) => this.props.handleSearch('and')}
@@ -132,6 +161,8 @@ return (
 
                     <TextField variant="outlined" placeholder={getFlavor(this.props.ingredient)}
                                onKeyDown={(e) => getText(e)} onChange={(e) => storeText(e)}/>
+                      <br /><br />
+
                       {fridge}
                   </CardContent>
                   <Divider variant='middle' />
