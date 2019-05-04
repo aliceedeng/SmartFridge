@@ -8,8 +8,6 @@ import { connect } from 'react-redux';
 import SearchCard from '../../components/dashboard/SearchCard';
 import CardList from '../../components/dashboard/CardList';
 import Header from '../../components/common/header/Header';
-import {bindActionCreators} from 'redux';
-import {clearFridge, removeIngredient} from '../../actions/ingredientAction';
 
 const divStyle = {
     paddingTop:'20px',

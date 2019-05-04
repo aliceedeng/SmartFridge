@@ -6,7 +6,6 @@ import axios from 'axios';
 import SearchCard from '../../components/dashboard/SearchCard';
 import CardList from '../../components/dashboard/CardList';
 import Header from '../../components/common/header/Header';
-import Grid from '@material-ui/core/Grid';
 
 const styles = theme => ({
   root: {

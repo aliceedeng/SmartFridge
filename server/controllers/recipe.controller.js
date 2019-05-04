@@ -28,7 +28,7 @@ export async function getById(req, res, next) {
 // SHOULD BE CONVERTED TO FUZZY MATCHING
 export async function getByName(req, res, next) {
   try {
-    if (req.params.name && req.params.id) {
+    if (req.params.name && req.query.len) {
         const len = parseInt(req.query.len);
         const name = req.params.name;
         const rows = await recipe.getByName(name, len);

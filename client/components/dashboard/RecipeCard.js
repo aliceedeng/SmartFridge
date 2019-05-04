@@ -41,7 +41,7 @@ const styles = theme => ({
 
 class RecipeCard extends React.Component {
     /*
-    Props should contain title, rid, imgLink later
+     Props should contain title, rid, imgLink later
      */
     state = {
         expanded: false,

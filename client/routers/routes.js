@@ -6,6 +6,7 @@ import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom';
 // Import custom components
 import RecipeDashboard from '../containers/dashboard/RecipeContainer';
 import IngredientDashboard from '../containers/dashboard/IngredientContainer';
+import CookbookDashboard from '../containers/dashboard/CookbookContainer';
 import NotFound from '../components/error/NotFound';
 
 const Router = () => (
@@ -15,6 +16,7 @@ const Router = () => (
               <Route exact path='/'>
                   <Redirect to='/recipes'/>
               </Route>
+              <Route exact path='/cookbook' component={CookbookDashboard}/>
               <Route exact path="/ingredients" component={IngredientDashboard}/>
               <Route exact path='/recipes' component={RecipeDashboard}/>
               <Route component={NotFound} />
