@@ -6,7 +6,9 @@ import Typography from '@material-ui/core/Typography';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import {ExpandMore, CheckBoxOutlineBlankTwoTone, CheckBoxTwoTone} from '@material-ui/icons';
-
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import Divider from '@material-ui/core/Divider';
 import CardActions from '@material-ui/core/CardActions';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -45,6 +47,16 @@ const styles = theme => ({
         transform: 'rotate(180deg)',
     }
 });
+
+const addIngredientStyle = {
+
+    backgroundColor: '#62d16d',
+    border: 'None',
+    color: 'White',
+    fontSize: '80 px',
+    borderRadius:'25px'
+}
+
 const inFridge = function(fridge, id) {
     let index = fridge.map((ingredient) => (ingredient.id)).indexOf(id);
 
@@ -66,7 +78,8 @@ class IngredientCard extends React.Component {
 
     handleAddClick = () => {
         if (inFridge(this.props.fridgeContents, this.props.id)) {
-            this.props.removeIngredient(this.props.id);
+            //this.props.removeIngredient(this.props.id);
+            //alert('already in fridge');
         } else {
             this.props.addIngredient({
                 name: this.props.name,
@@ -140,14 +153,8 @@ class IngredientCard extends React.Component {
                         >
                             <ExpandMore />
                         </IconButton>
-                        <IconButton
-                            className={classes.expand}
-                            style = {{transform : 'rotate(0deg)'}}
-                            onClick={this.handleAddClick}
-                            aria-label="Add to fridge"
-                        >
-                            {checkboxIcon}
-                        </IconButton>
+                        <button style={addIngredientStyle} onClick={this.handleAddClick}>add to fridge</button>
+                        
                     </CardActions>
                     <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
                         <CardContent>
@@ -158,17 +165,21 @@ class IngredientCard extends React.Component {
                                 <ListItem>
                                     <ListItemText primary='Calories' secondary={this.state.calories} />
                                 </ListItem>
+                                <Divider variant='middle' />
                                 <ListItem>
                                     <ListItemText primary='Sugar' secondary={this.state.sugar} />
                                 </ListItem>
+                                <Divider variant='middle' />
                                 <ListItem>
                                     <ListItemText primary='Protein' secondary={this.state.protein} />
                                 </ListItem>
+                                <Divider variant='middle' />
                                 <ListItem>
                                     <ListItemText primary='Sodium' secondary={this.state.sodium} />
                                 </ListItem>
+                                <Divider variant='middle' />
                                 <ListItem>
-                                    <ListItemText primary='Cholesterol' secondary={this.state.sugar} />
+                                    <ListItemText primary='Cholesterol' secondary={this.state.cholesterol} />
                                 </ListItem>
                             </List>
                         </CardContent>
