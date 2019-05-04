@@ -67,6 +67,16 @@ const IngredientButton = withRouter(({ history }) => (
     </button>
 ));
 
+const CookbookButton = withRouter(({ history }) => (
+    <button
+        style={buttonStyle}
+        type='button'
+        onClick={() => { history.push('/cookbook'); }}
+    >
+        my cookbook
+    </button>
+));
+
 class Header extends Component {
 
     /*
@@ -84,10 +94,11 @@ return (
                 <AppBar className={classNames(classes.appBar, navDrawerOpen && classes.appBarShift)}>
                     <Toolbar>
                         <RecipeButton />
-                        <Typography type="title" className={classes.flex}>
-
-                        </Typography>
                         <IngredientButton />
+                        <Typography type="title" className={classes.flex}>
+                            DumbFridge
+                        </Typography>
+                        <CookbookButton/>
                     </Toolbar>
                 </AppBar>
             </div>

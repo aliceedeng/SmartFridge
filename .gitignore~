@@ -69,7 +69,8 @@ ingredient-phrase-tagger/tmp/results.json
 ingredient-phrase-tagger/tmp/results.txt
 data_processing/zestful/output.json
 data_processing/zestful/finalpred.txt
-data/table/*
+data/tables/*
+data/join/*
 
 /.idea
 .env
