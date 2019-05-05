@@ -13,7 +13,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import CardMedia from '@material-ui/core/CardMedia';
 import { connect } from 'react-redux';
-
+import inFridge from '../../utils/inFridge';
 
 const placeholderImgs = [
     'https://payload.cargocollective.com/1/14/466639/13802007/cake_black_1250.jpg',
@@ -56,14 +56,37 @@ const styles = theme => ({
 
 class RecipeCard extends React.Component {
     /*
-     Props should contain title, rid, imgLink later
+     Props should contain title, rid, picLink later
      */
-    state = {
-        expanded: false,
-        instructions: '',
-        ingredients: ''
-    };
+    constructor(props) {
+        super(props);
+        this.trueLink = this.getTrueLink();
+        this.state = {
+                expanded: false,
+                instructions: '',
+                ingredients: ''
+            };
+    }
 
+    // returns a link to display with this recipe card
+    // corresponds to a randomly chosen stock image from one of several
+    // if no image is defined
+    getTrueLink() {
+        let trueLink;
+        if (this.props.picLink) {
+            if (this.props.picLink.includes('nophoto')) {
+                const rand = Math.floor(Math.random() * 5);
+                trueLink = placeholderImgs[rand];
+            } else {
+                trueLink = this.props.picLink;
+            }
+        } else {
+            const rand = Math.floor(Math.random() * 5);
+            trueLink = placeholderImgs[rand];
+        }
+
+        return trueLink;
+    }
     handleExpandClick = () => {
         if (!this.state.expanded) {
             var request = '/api/recipe/rid/' + this.props.rid;
@@ -93,29 +116,24 @@ class RecipeCard extends React.Component {
             actionStyle.transform = 'rotate(180deg)';
             let ingredients = this.state.ingredients;
 
-            ingrList = ingredients.map(function(ingr, index){
+            ingrList = ingredients.map(function(ingr, index) {
+                let liStyle = {};
+                if (inFridge(this.props.fridgeContents, ingr.USDA_ID)) {
+                    liStyle.fontWeight = 'bold';
+                } else {
+                    liStyle.fontWeight = 'normal';
+                }
 
-                return <li key={ index }>{ingr}</li>;
-                                          });
+                return <li style={liStyle} key={index}>{ingr.INPUT}</li>;
+            }.bind(this));
+
         } else {
             actionStyle.transform = 'rotate(0deg)';
-        }
-        let trueLink;
-        if (this.props.picLink) {
-            if (this.props.picLink.includes('nophoto')) {
-                const rand = Math.floor(Math.random() * 5);
-                trueLink = placeholderImgs[rand];
-            } else {
-                trueLink = this.props.picLink;
-            }
-        } else {
-            const rand = Math.floor(Math.random() * 5);
-            trueLink = placeholderImgs[rand];
         }
 
         let img = <CardMedia
             style = {mediaStyle}
-            image={trueLink}
+            image={this.trueLink}
             title="Recipe image"/>;
         return (
             
@@ -145,12 +163,9 @@ class RecipeCard extends React.Component {
                     <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
                         <CardContent>
                             <Typography paragraph>Ingredients</Typography>
-                            <Typography paragraph>
                                 <ul>
                                     {ingrList}
                                 </ul>
-                                
-                            </Typography>
                             <Typography paragraph>
                                 Instructions
                             </Typography>
@@ -167,7 +182,7 @@ class RecipeCard extends React.Component {
 
 function mapStateToProps(state) {
     return ({
-        fridgeIngredients: state.fridge.contents
+        fridgeContents: state.fridge.contents
     });
 }
 

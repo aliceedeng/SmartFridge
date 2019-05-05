@@ -10,10 +10,10 @@ const baseQuery =
  * associated with a particular recipe
  */
 async function ridIngredients(rid) {
-  let query = `SELECT INPUT FROM INGREDIENTS WHERE RID = '` + rid + `'`;
+  let query = `SELECT INPUT, USDA_ID FROM INGREDIENTS WHERE RID = '` + rid + `'`;
   const result = await database.simpleExecute(query, {});
 
-  return result.rows.map(row => row.INPUT);
+  return result.rows;
 }
 
 async function find(context) {
