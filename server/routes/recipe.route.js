@@ -10,7 +10,6 @@ router.route('/rid/:rid')
 router.route('/name/:name')
   .get(recipes.getByName);
 
-
 router.route('/include')
   .get(recipes.getByIngredientsOr);
 
@@ -26,8 +25,11 @@ router.route('/relevant')
 router.route('/exclude')
     .get(recipes.getByIngredientsAnd);
 
-router.route('/protein/')
+router.route('/protein/:name')
   .get(recipes.getHighProtein);
+
+router.route('/sugar/:name')
+  .get(recipes.getLowSugar);
 
 router.route('/random/')
   .get(recipes.getRandom);

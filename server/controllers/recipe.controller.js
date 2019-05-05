@@ -224,8 +224,25 @@ export async function getMostRelevantByIngredients(req, res, next) {
 
 export async function getHighProtein(req, res, next) {
   try {
-    const rows = await recipe.getHighProtein();
-    res.status(200).json(rows);
+    if (req.params.name && req.query.len) {
+        const len = parseInt(req.query.len);
+        const name = req.params.name;
+        const rows = await recipe.getHighProtein(name, len);
+        res.status(200).json(rows);
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getLowSugar(req, res, next) {
+  try {
+    if (req.params.name && req.query.len) {
+        const len = parseInt(req.query.len);
+        const name = req.params.name;
+        const rows = await recipe.getHighProtein(name, len);
+        res.status(200).json(rows);
+    }
   } catch (err) {
     next(err);
   }

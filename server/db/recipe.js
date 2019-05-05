@@ -21,7 +21,7 @@ async function instructions(rid) {
     WHERE RID='` + rid + `'`;
     const result = await database.simpleExecute(query);
 
-return result.rows[0].INSTRUCTIONS;
+    return result.rows[0].INSTRUCTIONS;
 }
 
 async function find(context) {
@@ -130,23 +130,49 @@ async function getByIngredientsOr(id) {
     return result.rows;
 }
 
-async function getHighProtein() {
-  let query = `SELECT DISTINCT(Title)
-                FROM
-                RECIPES r
-                WHERE RID IN
-                (SELECT RID FROM INGREDIENTS i
-                NATURAL JOIN
-                (SELECT USDA_ID, PROTEIN
-                FROM USDA) u
-                WHERE u.PROTEIN > 10)
-                AND ROWNUM <= 10`;
-  console.log(query);
-
+// gets recipes with at least one ingredient with high level of protein
+async function getHighProtein(name, count) {
+  let fixName = name.replace(`'`, `''`);
+  let subquery = `SELECT DISTINCT Title, RID
+                  FROM RECIPES r
+                  WHERE RID IN
+                  (SELECT RID FROM INGREDIENTS i
+                  NATURAL JOIN
+                  (SELECT USDA_ID, PROTEIN
+                  FROM USDA) u
+                  WHERE u.PROTEIN > 15)
+                  AND Title LIKE '` + fixName + `%'` +
+                  ` AND ROWNUM <= ` + count;
+  let query = wrapRecipeQueryWithImages(subquery);
   const result = await database.simpleExecute(query, {});
 
-return result.rows;
+  return result.rows;
 }
+
+
+// gets recipes with at least one ingredient with high level of protein
+async function getLowSugar(name, count) {
+  let subquery = `SELECT DISTINCT Title, RID
+                  FROM
+                  RECIPES r
+                  WHERE RID IN
+                  (SELECT RID FROM INGREDIENTS i
+                  NATURAL JOIN
+                  (SELECT USDA_ID, SUGAR
+                  FROM USDA) u
+                  WHERE u.SUGAR < 1)
+                  AND ROWNUM <= 10`;
+  let query = wrapRecipeQueryWithImages(subquery);
+  const result = await database.simpleExecute(query, {});
+<<<<<<< HEAD
+
+return result.rows;
+=======
+  return result.rows;
+>>>>>>> master
+}
+
+
 
 async function getRandom() {
   var query = `SELECT * FROM RECIPES WHERE ROWNUM = 1`;
@@ -162,6 +188,10 @@ module.exports.instructions = instructions;
 module.exports.getByName = getByName;
 module.exports.getByIngredientsOr = getByIngredientsOr;
 module.exports.getHighProtein = getHighProtein;
+module.exports.getLowSugar = getLowSugar;
 module.exports.getRandom = getRandom;
 module.exports.getMostRelevantByIngredients = getMostRelevantByIngredients;
+<<<<<<< HEAD
 module.exports.getAll = getAll;
+=======
+>>>>>>> master
