@@ -146,7 +146,7 @@ class RecipeCard extends React.Component {
         if (inCookbook(this.props.cookbookContents, this.props.rid)) {
             cookbookButton =
                 <IconButton
-                    style = {actionStyle}
+                    
                     onClick={(e) => this.handleAddClick(false)}
                     aria-label="add to cookbook"
                     color='secondary'
@@ -156,7 +156,7 @@ class RecipeCard extends React.Component {
         } else {
             cookbookButton =
                 <IconButton
-                    style = {actionStyle}
+                    
                     onClick={(e) => this.handleAddClick(true)}
                     aria-label="add to cookbook"
                 >
