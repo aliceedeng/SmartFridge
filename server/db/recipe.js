@@ -164,3 +164,4 @@ module.exports.getByIngredientsOr = getByIngredientsOr;
 module.exports.getHighProtein = getHighProtein;
 module.exports.getRandom = getRandom;
 module.exports.getMostRelevantByIngredients = getMostRelevantByIngredients;
+module.exports.getAll = getAll;

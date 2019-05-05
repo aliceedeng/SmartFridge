@@ -16,8 +16,8 @@ const fuseOptions = {
         'Title'
     ]
 };
-const fuzzy = true;
-const getAll = true;
+const fuzzy = false;
+const getAll = false;
 
 
 const factUtils = require('../utils/factUtils.js');
@@ -50,7 +50,8 @@ export async function getById(req, res, next) {
 export async function getByName(req, res, next) {
   try {
     let name = req.params.name;
-    const len = parseInt(req.query.len);
+    // const len = parseInt(req.query.len);
+    const len = 10;
     name = name.toLowerCase();
     let rows = [];
     if (getAll) {
