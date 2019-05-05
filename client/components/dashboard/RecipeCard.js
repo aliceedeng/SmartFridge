@@ -93,10 +93,20 @@ class RecipeCard extends React.Component {
 
     handleAddClick = (adding) => {
         if (adding) {
-            this.props.addRecipe({
-                title: this.props.title,
-                rid: this.props.rid,
-                picLink: this.props.picLink
+            let request = '/api/recipe/facts?id=' + this.props.rid;
+            axios.get(request).
+            then(res => {
+                const recipeFacts = res.data[0];
+                this.props.addRecipe({
+                    title: this.props.title,
+                    rid: this.props.rid,
+                    picLink: this.props.picLink,
+                    calories: recipeFacts.calories,
+                    protein: recipeFacts.protein,
+                    sodium: recipeFacts.sodium,
+                    sugar: recipeFacts.sugar,
+                    cholesterol: recipeFacts.cholesterol
+                });
             });
         } else {
             console.log(this.props.rid);
@@ -165,11 +175,23 @@ class RecipeCard extends React.Component {
         } else {
             actionStyle.transform = 'rotate(0deg)';
         }
-
         let img = <CardMedia
             style = {mediaStyle}
             image={this.trueLink}
             title="Recipe image"/>;
+
+        let facts;
+        if (this.props.cookbook) {
+            facts = (<CardContent>
+                <ul>
+                    <li> {'calories ' + this.props.calories.toFixed(2)}</li>
+                    <li> {'protein ' + this.props.protein.toFixed(2) + ' (g)'}</li>
+                    <li> {'sugar ' + this.props.sugar.toFixed(2) + ' (g)'}</li>
+                    <li> {'sodium ' + this.props.sodium.toFixed(2) + ' (mg)'}</li>
+                    <li> {'cholesterol ' + this.props.cholesterol.toFixed(2) + ' (mg)'}</li>
+                </ul>
+            </CardContent>);
+        }
         return (
             
             <Grid item xs={4}>
@@ -184,6 +206,7 @@ class RecipeCard extends React.Component {
                         {cookbookButton}
                     </CardActions>
                     {img}
+                    {facts}
                     <Divider variant="middle" />
                     <CardActions className={classes.actions} disableActionSpacing>
                         <IconButton

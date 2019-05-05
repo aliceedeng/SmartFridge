@@ -7,9 +7,45 @@ import
 
 // fridge consists of contents array
 let initialState = {
-    contents: []
+    contents: [],
+    summary: {
+        calories: 0,
+        sugar: 0,
+        protein: 0,
+        cholesterol: 0,
+        sodium: 0
+    }
 };
 
+const updateSummary = function(contents) {
+    let newSummary = {
+        calories: 0,
+        sugar: 0,
+        protein: 0,
+        cholesterol: 0,
+        sodium: 0
+    };
+    if (contents.length === 0) {
+        return newSummary;
+    }
+    console.log(contents);
+    for (let i = 0; i < contents.length; i++) {
+        newSummary.calories += contents[i].calories;
+        newSummary.sugar += contents[i].sugar;
+        newSummary.protein += contents[i].protein;
+        newSummary.cholesterol += contents[i].cholesterol;
+        newSummary.sodium += contents[i].sodium;
+    }
+    console.log(newSummary);
+    console.log(contents.length);
+    newSummary.calories = newSummary.calories / contents.length;
+    newSummary.protein = newSummary.protein / contents.length;
+    newSummary.sugar = newSummary.sugar / contents.length;
+    newSummary.cholesterol = newSummary.cholesterol / contents.length;
+    newSummary.sodium = newSummary.sodium / contents.length;
+
+    return newSummary;
+}
 /**
  * Reducer for ingredients fridge
  *
@@ -22,11 +58,14 @@ export default function (state, action) {
     state = state || initialState;
     let newState;
     let index;
+    let newContents;
 
     switch (action.type) {
         case RECIPE_ADD:
+            newContents = [...state.contents, action.data]
             newState = Object.assign({}, state, {
-                contents: [...state.contents, action.data]
+                contents: newContents,
+                summary: updateSummary(newContents)
             });
 
             return newState;
@@ -34,11 +73,10 @@ export default function (state, action) {
         case RECIPE_REMOVE:
             index = state.contents.map((ingredient) => (ingredient.rid)).indexOf(action.data);
             if (index !== -1) {
+                newContents = [...state.contents.slice(0, index), ...state.contents.slice(index + 1)]
                 newState = Object.assign({}, state, {
-                    contents: [
-                        ...state.contents.slice(0, index),
-                        ...state.contents.slice(index + 1)
-                    ]
+                    contents: newContents,
+                    summary: updateSummary(newContents)
                 });
             } else {
                 newState = Object.assign({}, state);
@@ -48,7 +86,8 @@ export default function (state, action) {
 
         case BOOK_CLEAR:
             newState = Object.assign({}, state, {
-                contents: []
+                contents: [],
+                summary: updateSummary([])
             });
 
             return newState;

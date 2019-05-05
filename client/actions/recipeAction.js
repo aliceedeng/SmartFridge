@@ -8,9 +8,17 @@ import
 
 // action for adding recipe to the cookbook
 export function addRecipe(data) {
+    let trueData = Object.assign({}, data, {
+        calories: parseFloat(data.calories),
+        sugar: parseFloat(data.sugar),
+        cholesterol: parseFloat(data.cholesterol),
+        protein: parseFloat(data.protein),
+        sodium: parseFloat(data.sodium)
+    });
+    console.log(trueData);
     return {
         type: RECIPE_ADD,
-        data: data
+        data: trueData
     };
 }
 

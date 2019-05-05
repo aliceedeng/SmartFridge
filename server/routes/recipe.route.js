@@ -14,6 +14,11 @@ router.route('/name/:name')
 router.route('/include')
   .get(recipes.getByIngredientsOr);
 
+// get recipe nutrition facts -- not functional yet
+// expects id query (may be multiple)
+router.route('/facts')
+	.get(recipes.getFacts);
+
 router.route('/relevant')
 	.get(recipes.getMostRelevantByIngredients);
 

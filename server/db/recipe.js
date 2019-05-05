@@ -1,4 +1,5 @@
 const database = require('../services/database.js');
+const sqlString = require('../utils/sqlString.js');
 
 const baseQuery =
  `SELECT *
@@ -78,6 +79,7 @@ async function getByIngredientsAnd(id) {
     let query = wrapRecipeQueryWithImages(outerSubquery);
     const result = await database.simpleExecute(query, {});
     console.log(query);
+
     return result.rows;
 }
 
@@ -97,7 +99,7 @@ async function getMostRelevantByIngredients(id) {
     let subquery = `SELECT RID, P.TITLE FROM` +
     ` (SELECT RID, R.TITLE AS TITLE, R.PICTURE_LINK AS PICTURE_LINK, COUNT(RID) AS COUNT ` +
     `FROM INGREDIENTS I NATURAL JOIN RECIPES R ` +
-    `WHERE I.USDA_ID IN` + idString +' GROUP BY RID, R.TITLE, R.PICTURE_LINK ORDER BY COUNT DESC) P WHERE ROWNUM <=50';
+    `WHERE I.USDA_ID IN` + idString + ' GROUP BY RID, R.TITLE, R.PICTURE_LINK ORDER BY COUNT DESC) P WHERE ROWNUM <=50';
     let query = wrapRecipeQueryWithImages(subquery);
     console.log(query);
     const result = await database.simpleExecute(query, {});
@@ -108,17 +110,10 @@ async function getMostRelevantByIngredients(id) {
 // consider caching on first search with a specific fridge
 // current variant --- query takes an average of 38 seconds
 async function getByIngredientsOr(id) {
-    let idString = '(';
-    for (let i = 0; i < id.length; i++) {
-        idString += id[i];
-        if (i < (id.length - 1)) {
-            idString += ', ';
-        }
-    }
-    idString += ')';
+    const idString = sqlString.numString(id);
     let subquery = `SELECT RID, R.TITLE ` +
     `FROM INGREDIENTS I NATURAL JOIN RECIPES R ` +
-    `WHERE I.USDA_ID IN` + idString +'AND ROWNUM <=50';
+    `WHERE I.USDA_ID IN` + idString + 'AND ROWNUM <=50';
     let query = wrapRecipeQueryWithImages(subquery);
     const result = await database.simpleExecute(query, {});
 

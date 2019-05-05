@@ -1,5 +1,6 @@
 // NOTE: WHENEVER SELECTING INGREDIENT BY NAME FROM USDA--TRIM BEFORE RETURNING
 const database = require('../services/database.js');
+const sqlString  = require('../utils/sqlString.js');
 
 const baseQuery =
  `select *
@@ -16,6 +17,19 @@ async function ridIngredients(rid) {
   return result.rows;
 }
 
+// return all nutrition facts associated with a set of recipes
+async function computeFacts(rid) {
+  const ridList = sqlString.strString(rid);
+  let query = `SELECT TRIM(I.RID) AS RID, I.QTY AS QTY, TRIM(I.UNIT) AS UNIT, U.CAL AS CALORIES, ` +
+      `U.HWT_1 AS GP1, U.HWT_2 AS GP2, TRIM(U.HOUSE_2) AS AM2, TRIM(U.HOUSE_1) AS AM1, ` +
+      `U.PROTEIN AS PROTEIN, U.SUGAR AS SUGAR, U.SODIUM AS SODIUM, U.CHOLESTEROL AS CHOLESTEROL ` +
+      `FROM (SELECT RID, USDA_ID, QTY, UNIT FROM INGREDIENTS WHERE RID IN ` + ridList + `) I NATURAL JOIN ` +
+      `USDA U`;
+  console.log(query);
+  const result = await database.simpleExecute(query, {});
+
+  return result.rows;
+}
 async function find(context) {
   let query = baseQuery;
   const binds = {};
@@ -65,3 +79,4 @@ module.exports.getAll = getAll;
 module.exports.ridIngredients = ridIngredients;
 module.exports.find = find;
 module.exports.getByName = getByName;
+module.exports.computeFacts = computeFacts;

@@ -8,9 +8,10 @@ import axios from 'axios';
 
 
 // Import custom components
-import SearchCard from '../../components/dashboard/SearchCard';
 import CardList from '../../components/dashboard/CardList';
 import Header from '../../components/common/header/Header';
+import CookbookSummary from '../../components/dashboard/CookbookSummary';
+
 
 
 const divStyle = {
@@ -33,6 +34,8 @@ class CookbookDashboard extends Component {
 
     render() {
         let recipeCards;
+        console.log('saved recipes');
+        console.log(this.props.savedRecipes);
         recipeCards = <CardList resultsData={this.props.savedRecipes} ingredient={false} cookbook={true}/>;
 
         return (
@@ -42,6 +45,7 @@ class CookbookDashboard extends Component {
                 </div>
                 <div>
                     <div>
+                        <CookbookSummary ingredient={false}/>
                     </div>
                     <div style= {divStyle}>
 
