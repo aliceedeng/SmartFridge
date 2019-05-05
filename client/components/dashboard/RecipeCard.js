@@ -17,6 +17,10 @@ import inFridge from '../../utils/inFridge';
 import inCookbook from '../../utils/inCookbook';
 import {bindActionCreators} from 'redux';
 import {addRecipe, removeRecipe} from '../../actions/recipeAction';
+import Favorite from '@material-ui/icons/Favorite';
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+import Snackbar from '@material-ui/core/Snackbar';
+import SnackbarContent from '@material-ui/core/SnackbarContent';
 
 const placeholderImgs = [
     'https://payload.cargocollective.com/1/14/466639/13802007/cake_black_1250.jpg',
@@ -36,6 +40,7 @@ const mediaStyle = {
     height: 0,
     paddingTop: '56.25%'
 };
+
 
 const styles = theme => ({
     card: {
@@ -67,9 +72,19 @@ class RecipeCard extends React.Component {
         this.state = {
                 expanded: false,
                 instructions: '',
-                ingredients: ''
+                ingredients: '',
+                open: false
             };
     }
+
+    //for snackbar: when adding to fridge and removing from fridge
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+
+        this.setState({ open: false });
+      };
 
     // returns a link to display with this recipe card
     // corresponds to a randomly chosen stock image from one of several
@@ -108,6 +123,7 @@ class RecipeCard extends React.Component {
                     cholesterol: recipeFacts.cholesterol
                 });
             });
+            this.setState({ open: true }); //trigger snackbar
         } else {
             console.log(this.props.rid);
             this.props.removeRecipe(this.props.rid);
@@ -140,20 +156,21 @@ class RecipeCard extends React.Component {
         if (inCookbook(this.props.cookbookContents, this.props.rid)) {
             cookbookButton =
                 <IconButton
-                    style = {actionStyle}
+                    
                     onClick={(e) => this.handleAddClick(false)}
                     aria-label="add to cookbook"
+                    color='secondary'
                 >
-                    <CheckBoxTwoTone />
+                    <Favorite />
                 </IconButton>;
         } else {
             cookbookButton =
                 <IconButton
-                    style = {actionStyle}
+                    
                     onClick={(e) => this.handleAddClick(true)}
                     aria-label="add to cookbook"
                 >
-                    <CheckBoxOutlineBlankTwoTone />
+                    <FavoriteBorder />
                 </IconButton>;
         }
         let ingrList;
@@ -203,7 +220,7 @@ class RecipeCard extends React.Component {
                         </Typography>
                     </CardContent>
                     <CardActions className={classes.actions} disableActionSpacing>
-                        {cookbookButton}
+                        
                     </CardActions>
                     {img}
                     {facts}
@@ -220,6 +237,19 @@ class RecipeCard extends React.Component {
                         >
                             <ExpandMore />
                         </IconButton>
+                        {cookbookButton}
+                        <Snackbar
+                          anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                          }}
+                          open={this.state.open}
+                          autoHideDuration={3000}
+                          onClose={this.handleClose}
+                          message={<span>added to cookbook!</span>}
+                        >
+                          
+                        </Snackbar>
                     </CardActions>
                     <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
                         <CardContent>

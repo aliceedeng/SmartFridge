@@ -1,7 +1,8 @@
 import {
     INGREDIENT_ADD,
     INGREDIENT_REMOVE,
-    FRIDGE_CLEAR
+    FRIDGE_CLEAR,
+    UPDATE_SEARCH_TYPE
 } from '../constants/actionType';
 
 // action for adding an ingredient to the store
@@ -32,3 +33,13 @@ export function removeIngredient(id) {
     };
 }
 
+
+// change the search type to new search type
+// given by data argument
+// expects a string of new search type ('or', 'and', 'sortedOr')
+export function updateSearchType(newType) {
+    return {
+        type: UPDATE_SEARCH_TYPE,
+        data: newType
+    };
+}

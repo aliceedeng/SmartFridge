@@ -57,7 +57,8 @@ class IngredientDashboard extends Component {
     }
 
     // executes search query for recipes given current fridge contents
-    handleSearch(searchType) {
+    handleSearch() {
+        const searchType = this.props.searchType;
         let request = 'api/recipe/';
         if (searchType === 'or') {
             request += 'include';
@@ -153,7 +154,8 @@ class IngredientDashboard extends Component {
 function mapStateToProps(state) {
     return(
         {
-            fridgeContents: state.fridge.contents
+            fridgeContents: state.fridge.contents,
+            searchType: state.fridge.searchType
         }
     );
 }
