@@ -122,12 +122,12 @@ class IngredientDashboard extends Component {
             console.log('recipes');
             resultsCards = <CardList
                 resultsData={this.state.recipes}
-                ingredient={false} />;
+                ingredient={false} cookbook={false}/>;
         }
         if (this.state.hasIngredientResults) {
             console.log('ingredients');
             resultsCards = <CardList resultsData={this.state.ingredients}
-                                     ingredient={true} />;
+                                     ingredient={true} cookbook={false}/>;
         }
 
         return (

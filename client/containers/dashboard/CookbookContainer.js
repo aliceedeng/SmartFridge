@@ -33,7 +33,7 @@ class CookbookDashboard extends Component {
 
     render() {
         let recipeCards;
-        recipeCards = <CardList resultsData={this.props.savedRecipes} ingredient={false} />;
+        recipeCards = <CardList resultsData={this.props.savedRecipes} ingredient={false} cookbook={true}/>;
 
         return (
             <div>
