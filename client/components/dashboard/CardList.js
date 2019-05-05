@@ -37,7 +37,7 @@ const CardList = ({ resultsData, ingredient } ) => {
     ));
   } else {
       cardsArray = resultsData.map((recipe, index) => (
-          <RecipeCard key={index} title={recipe.TITLE} rid={recipe.RID} picLink={recipe.PICTURE_LINK}/>
+          <RecipeCard key={recipe.RID} title={recipe.TITLE} rid={recipe.RID} picLink={recipe.PICTURE_LINK}/>
       ));
 
      

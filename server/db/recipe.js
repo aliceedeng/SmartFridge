@@ -86,7 +86,6 @@ async function getByIngredientsAnd(id) {
 // of how many ingredients matched
 
 async function getMostRelevantByIngredients(id) {
-    console.log("HELLO");
     let idString = '(';
     for (let i = 0; i < id.length; i++) {
         idString += id[i];
@@ -95,11 +94,11 @@ async function getMostRelevantByIngredients(id) {
         }
     }
     idString += ')';
-    let query = `SELECT RID, P.TITLE, P.PICTURE_LINK FROM` + 
+    let subquery = `SELECT RID, P.TITLE FROM` +
     ` (SELECT RID, R.TITLE AS TITLE, R.PICTURE_LINK AS PICTURE_LINK, COUNT(RID) AS COUNT ` +
     `FROM INGREDIENTS I NATURAL JOIN RECIPES R ` +
     `WHERE I.USDA_ID IN` + idString +' GROUP BY RID, R.TITLE, R.PICTURE_LINK ORDER BY COUNT DESC) P WHERE ROWNUM <=50';
-
+    let query = wrapRecipeQueryWithImages(subquery);
     console.log(query);
     const result = await database.simpleExecute(query, {});
 
