@@ -47,8 +47,15 @@ class RecipeDashboard extends Component {
         this.storeText = this.storeText.bind(this);
         this.getText = this.getText.bind(this);
         this.searchText = '';
+        this.searchFilter = 'NONE';
+        this.updateSearchFilter = this.updateSearchFilter.bind(this);
         // this.recipes = new Array(10);
         this.state = { recipes: [], hasRecipes: false };
+    }
+
+    updateSearchFilter(newFilter) {
+      console.log(this.searchFilter);
+      this.searchFilter = newFilter;
     }
 
     // Updates search text based on latest user action
@@ -63,7 +70,16 @@ class RecipeDashboard extends Component {
             const recipe = this.searchText;
             // MODIFY AS NECESSARY USING ARG
             const length = 20;
-            let request = '/api/recipe/name/' + recipe + '?len=' + length;
+            // add additional filtering
+            var request = ''
+            console.log(this.searchFilter);
+            if (this.searchFilter == 'PROTEIN')
+                request = '/api/recipe/protein/' + recipe + '?len=' + length;
+            else if (this.searchFilter == 'SUGAR')
+                request = '/api/recipe/sugar/' + recipe + '?len=' + length;
+            else // TODO
+                request = '/api/recipe/name/' + recipe + '?len=' + length;
+            console.log(request);
             axios.get(request)
                 .then(res => {
                     this.setState({ recipes: res.data, hasRecipes: true });
@@ -74,13 +90,13 @@ class RecipeDashboard extends Component {
 
     render() {
         let display;
-        display = <SearchCard storeText={this.storeText} getText={this.getText} ingredient={false} />;
+        display = <SearchCard storeText={this.storeText} getText={this.getText} ingredient={false} updateSearchFilter={this.updateSearchFilter}/>;
 
         let recipeCards;
         if (this.state.hasRecipes) {
             recipeCards = <CardList resultsData={this.state.recipes} ingredient={false} cookbook={false}/>;
         }
-        
+
 return (
             <div>
                 <div>
@@ -91,10 +107,10 @@ return (
                         {display}
                     </div>
                     <div style= {divStyle}>
-                       
+
                                 { recipeCards }
-                            
-                    
+
+
                     </div>
                 </div>
             </div >

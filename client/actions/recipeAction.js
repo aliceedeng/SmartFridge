@@ -38,4 +38,3 @@ export function removeRecipe(id) {
         data: id
     };
 }
-

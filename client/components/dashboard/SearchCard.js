@@ -40,7 +40,6 @@ const buttonStyle = {
 }
 
 const clearFridgeStyle = {
-
 	backgroundColor: '#ef56a2',
 	border: 'None',
     color: 'White',
@@ -55,8 +54,6 @@ const buttonStyleAnd = {
     fontSize: '80 px',
     borderRadius:'5px'
 }
-
-
 
 const chipStyle = {
 	marginTop:'5px',
@@ -117,12 +114,14 @@ class SearchCard extends Component {
     ingredient: boolean giving whether this search card is for searching ingredients (alternatively recipes)
     updateSearchType: function that changes the search type of the fridge store to a new type based on dropdown ('or', 'and', 'sortedOr')
     searchType: current search Type
+    searchFilter: includes filtering for special type of recipe search (TODO: allow for multiple filters)
    */
 
 
   render() {
     const storeText = this.props.storeText;
     const getText = this.props.getText;
+    const updateSearchFilter = this.props.updateSearchFilter;
     let fridge;
     let actions;
     let description;
@@ -134,10 +133,10 @@ class SearchCard extends Component {
                 </button></div>
 
         fridge = this.props.fridgeContents.map((data) => (
-        	
-        		<Chip key={data.id} 
-	        		label={data.name} 
-	        		onDelete={(e) => this.props.removeIngredient(data.id)} 
+
+        		<Chip key={data.id}
+	        		label={data.name}
+	        		onDelete={(e) => this.props.removeIngredient(data.id)}
 	        		style={chipStyle}
 	        		/>
         ));
@@ -150,9 +149,9 @@ class SearchCard extends Component {
             >{ingredient.name}</li>
         ));
         */
-        
+
         actions = (<CardActions className={'actions'}>
-                
+
                 <Select
 		            value={this.props.searchType}
 		            onChange={(e) => this.props.updateSearchType(e.target.value)}
@@ -166,21 +165,23 @@ class SearchCard extends Component {
                 <button style={buttonStyleAnd}
                         onClick={() => this.props.handleSearch()}
                         >find me a recipe</button>
-                
+
             </CardActions>);
     } else {
     	description = <span/>;
         fridge = <span/>;
         actions = (<CardActions className={'actions'}>
-                  	<button style={buttonStyle}>surprise me</button>
-                    <button style={buttonStyle}>high protein</button>
+                    <h4>Filters</h4>
+                  	<button style={buttonStyle} onClick={() => updateSearchFilter('NONE')}>clear filters</button>
+                    <button style={buttonStyle} onClick={() => updateSearchFilter('PROTEIN')}>high protein</button>
+                    <button style={buttonStyle} onClick={() => updateSearchFilter('SUGAR')}>low sugar</button>
                   </CardActions>);
     }
 return (
 
         <div style={getStyle(this.props.ingredient)}>
                 <Card>
-                  
+
                   <CardContent>
                       <span>
                           feeling hungry? <br /><br />
@@ -196,8 +197,6 @@ return (
                     {actions}
                 </Card>
             </div>
-
-
     );
   }
 

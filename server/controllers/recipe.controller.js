@@ -132,7 +132,7 @@ export async function getByIngredientsOr(req, res, next) {
 
         //get unique elements
         let rowSet = new Set()
-        
+
         //console.log(rows);
         for(let item of rows) {
           //console.log(item)
@@ -162,7 +162,7 @@ export async function getMostRelevantByIngredients(req, res, next) {
 
         //get unique elements
         //let rowSet = new Set()
-        
+
         //console.log(rows);
         //for(let item of rows) {
           //console.log(item)
@@ -173,7 +173,7 @@ export async function getMostRelevantByIngredients(req, res, next) {
         //rows = Array.from(rowSet)
 
         console.log("hi");
-  
+
         res.status(200).json(rows);
     } else {
       res.status(404).end();
@@ -185,8 +185,25 @@ export async function getMostRelevantByIngredients(req, res, next) {
 
 export async function getHighProtein(req, res, next) {
   try {
-    const rows = await recipe.getHighProtein();
-    res.status(200).json(rows);
+    if (req.params.name && req.query.len) {
+        const len = parseInt(req.query.len);
+        const name = req.params.name;
+        const rows = await recipe.getHighProtein(name, len);
+        res.status(200).json(rows);
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getLowSugar(req, res, next) {
+  try {
+    if (req.params.name && req.query.len) {
+        const len = parseInt(req.query.len);
+        const name = req.params.name;
+        const rows = await recipe.getHighProtein(name, len);
+        res.status(200).json(rows);
+    }
   } catch (err) {
     next(err);
   }
