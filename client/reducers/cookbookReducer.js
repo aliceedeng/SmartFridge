@@ -32,7 +32,7 @@ export default function (state, action) {
             return newState;
 
         case RECIPE_REMOVE:
-            index = state.contents.map((ingredient) => (ingredient.id)).indexOf(action.data);
+            index = state.contents.map((ingredient) => (ingredient.rid)).indexOf(action.data);
             if (index !== -1) {
                 newState = Object.assign({}, state, {
                     contents: [

@@ -33,10 +33,11 @@ async function find(context) {
 }
 
 const wrapRecipeQueryWithImages =function(subquery) {
-    let query = `SELECT R.TITLE AS TITLE, R.RID AS RID, I.LINK AS PICTURE_LINK FROM `;
-    let subqueryWrapped = `(` + subquery + `) R`;
+    let query = `SELECT Q.TITLE AS TITLE, Q.RID AS RID, Z.LINK AS PICTURE_LINK FROM `;
+    let subqueryWrapped = `(` + subquery + `) Q`;
     query += subqueryWrapped;
-    query = query + ` LEFT JOIN IMAGES I ON I.RID = R.RID`;
+    query = query + ` LEFT JOIN IMAGES Z ON Z.RID = Q.RID`;
+
     return query;
 
 }
@@ -73,7 +74,8 @@ async function getByIngredientsAnd(id) {
             subquery += ` INTERSECT `;
         }
     }
-    let query = `SELECT R.RID, R.TITLE, R.PICTURE_LINK FROM RECIPES R WHERE R.RID IN (` + subquery + `)`;
+    let outerSubquery = `SELECT R.RID, R.TITLE, R.PICTURE_LINK FROM RECIPES R WHERE R.RID IN (` + subquery + `)`;
+    let query = wrapRecipeQueryWithImages(outerSubquery);
     const result = await database.simpleExecute(query, {});
     console.log(query);
     return result.rows;
@@ -115,11 +117,10 @@ async function getByIngredientsOr(id) {
         }
     }
     idString += ')';
-    let query = `SELECT RID, R.TITLE, R.PICTURE_LINK ` +
+    let subquery = `SELECT RID, R.TITLE ` +
     `FROM INGREDIENTS I NATURAL JOIN RECIPES R ` +
     `WHERE I.USDA_ID IN` + idString +'AND ROWNUM <=50';
-
-    console.log(query);
+    let query = wrapRecipeQueryWithImages(subquery);
     const result = await database.simpleExecute(query, {});
 
     return result.rows;

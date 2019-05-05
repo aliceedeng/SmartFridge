@@ -7,7 +7,7 @@ import
 
 
 // action for adding recipe to the cookbook
-export function recipeAdd(data) {
+export function addRecipe(data) {
     return {
         type: RECIPE_ADD,
         data: data
