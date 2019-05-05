@@ -153,7 +153,7 @@ class SearchCard extends Component {
     } else {
         fridge = <span/>;
         actions = (<CardActions className={'actions'}>
-                  	<button style={buttonStyle}>surprise me</button>
+                  	<button style={buttonStyle} onClick={(e) => this.props.handleRandom()}>surprise me</button>
                     <button style={buttonStyle}>high protein</button>
                   </CardActions>);
     }

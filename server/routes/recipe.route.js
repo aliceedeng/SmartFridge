@@ -21,7 +21,7 @@ router.route('/exclude')
 router.route('/protein/')
   .get(recipes.getHighProtein);
 
-router.route('/random/')
+router.route('/random')
   .get(recipes.getRandom);
 
 export default router;
