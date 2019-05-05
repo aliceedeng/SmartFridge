@@ -125,7 +125,6 @@ class RecipeCard extends React.Component {
     //<div style={{ paddingBottom: '10px' }}>
 
     render() {
-        console.log(this.props);
         var actionStyle = {};
         let cookbookButton;
         if (inCookbook(this.props.cookbookContents, this.props.rid)) {
