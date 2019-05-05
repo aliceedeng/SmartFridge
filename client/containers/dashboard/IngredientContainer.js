@@ -63,6 +63,8 @@ class IngredientDashboard extends Component {
             request += 'include';
         } else if (searchType === 'and') {
             request += 'exclude';
+        } else if (searchType === 'sortedOr') {
+            request += 'relevant';
         }
         if (this.props.fridgeContents.length !== 0) {
             request += '?';

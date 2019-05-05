@@ -79,9 +79,12 @@ async function getByIngredientsAnd(id) {
     return result.rows;
 }
 
-// consider caching on first search with a specific fridge
-// current variant --- query takes an average of 38 seconds
-async function getByIngredientsOr(id) {
+
+// query ingredients by OR, sort ingredients by the count
+// of how many ingredients matched
+
+async function getMostRelevantByIngredients(id) {
+    console.log("HELLO");
     let idString = '(';
     for (let i = 0; i < id.length; i++) {
         idString += id[i];
@@ -90,9 +93,10 @@ async function getByIngredientsOr(id) {
         }
     }
     idString += ')';
-    let query = `SELECT RID, R.TITLE, R.PICTURE_LINK ` +
+    let query = `SELECT RID, P.TITLE, P.PICTURE_LINK FROM` + 
+    ` (SELECT RID, R.TITLE AS TITLE, R.PICTURE_LINK AS PICTURE_LINK, COUNT(RID) AS COUNT ` +
     `FROM INGREDIENTS I NATURAL JOIN RECIPES R ` +
-    `WHERE I.USDA_ID IN` + idString +'AND ROWNUM <=50';
+    `WHERE I.USDA_ID IN` + idString +' GROUP BY RID, R.TITLE, R.PICTURE_LINK ORDER BY COUNT DESC) P WHERE ROWNUM <=50';
 
     console.log(query);
     const result = await database.simpleExecute(query, {});
@@ -100,9 +104,9 @@ async function getByIngredientsOr(id) {
     return result.rows;
 }
 
-// query ingredients by OR, sort ingredients by the count
-// of how many ingredients matched
-async function getMostRelevantByIngredients(id) {
+// consider caching on first search with a specific fridge
+// current variant --- query takes an average of 38 seconds
+async function getByIngredientsOr(id) {
     let idString = '(';
     for (let i = 0; i < id.length; i++) {
         idString += id[i];
@@ -154,3 +158,4 @@ module.exports.getByName = getByName;
 module.exports.getByIngredientsOr = getByIngredientsOr;
 module.exports.getHighProtein = getHighProtein;
 module.exports.getRandom = getRandom;
+module.exports.getMostRelevantByIngredients = getMostRelevantByIngredients;

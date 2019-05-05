@@ -149,6 +149,10 @@ class SearchCard extends Component {
                         className='button'
                         onClick={(e) => this.props.handleSearch('and')}
                         >find me a recipe (all fridge ingredients)</button>
+                <button style={buttonStyleAnd}
+                        className='button'
+                        onClick={(e) => this.props.handleSearch('sortedOr')}
+                        >find me a recipe (most relevant)</button>
             </CardActions>);
     } else {
         fridge = <span/>;
