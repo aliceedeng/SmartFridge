@@ -164,12 +164,7 @@ async function getLowSugar(name, count) {
                   AND ROWNUM <= 10`;
   let query = wrapRecipeQueryWithImages(subquery);
   const result = await database.simpleExecute(query, {});
-<<<<<<< HEAD
-
-return result.rows;
-=======
   return result.rows;
->>>>>>> master
 }
 
 
@@ -191,7 +186,4 @@ module.exports.getHighProtein = getHighProtein;
 module.exports.getLowSugar = getLowSugar;
 module.exports.getRandom = getRandom;
 module.exports.getMostRelevantByIngredients = getMostRelevantByIngredients;
-<<<<<<< HEAD
 module.exports.getAll = getAll;
-=======
->>>>>>> master
