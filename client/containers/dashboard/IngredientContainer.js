@@ -3,13 +3,10 @@ import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
 import { connect } from 'react-redux';
 
-
 // Import custom components
 import SearchCard from '../../components/dashboard/SearchCard';
 import CardList from '../../components/dashboard/CardList';
 import Header from '../../components/common/header/Header';
-import {bindActionCreators} from 'redux';
-import {clearFridge, removeIngredient} from '../../actions/ingredientAction';
 
 const divStyle = {
     paddingTop:'20px',
@@ -60,12 +57,15 @@ class IngredientDashboard extends Component {
     }
 
     // executes search query for recipes given current fridge contents
-    handleSearch(searchType) {
+    handleSearch() {
+        const searchType = this.props.searchType;
         let request = 'api/recipe/';
         if (searchType === 'or') {
             request += 'include';
         } else if (searchType === 'and') {
             request += 'exclude';
+        } else if (searchType === 'sortedOr') {
+            request += 'relevant';
         }
         if (this.props.fridgeContents.length !== 0) {
             request += '?';
@@ -123,12 +123,12 @@ class IngredientDashboard extends Component {
             console.log('recipes');
             resultsCards = <CardList
                 resultsData={this.state.recipes}
-                ingredient={false} />;
+                ingredient={false} cookbook={false}/>;
         }
         if (this.state.hasIngredientResults) {
             console.log('ingredients');
             resultsCards = <CardList resultsData={this.state.ingredients}
-                                     ingredient={true} />;
+                                     ingredient={true} cookbook={false}/>;
         }
 
         return (
@@ -154,7 +154,8 @@ class IngredientDashboard extends Component {
 function mapStateToProps(state) {
     return(
         {
-            fridgeContents: state.fridge.contents
+            fridgeContents: state.fridge.contents,
+            searchType: state.fridge.searchType
         }
     );
 }

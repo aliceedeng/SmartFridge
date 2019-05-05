@@ -71,7 +71,7 @@ data_processing/zestful/output.json
 data_processing/zestful/finalpred.txt
 data/tables/*
 data/join/*
-
+data_processing/data/raw/*
 /.idea
 .env
 /dist

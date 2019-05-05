@@ -1,4 +1,5 @@
 const database = require('../services/database.js');
+const sqlString = require('../utils/sqlString.js');
 
 const baseQuery =
  `SELECT *
@@ -42,18 +43,29 @@ async function getAll() {
   return result.rows;
 }
 
+const wrapRecipeQueryWithImages =function(subquery) {
+    let query = `SELECT Q.TITLE AS TITLE, Q.RID AS RID, Z.LINK AS PICTURE_LINK FROM `;
+    let subqueryWrapped = `(` + subquery + `) Q`;
+    query += subqueryWrapped;
+    query = query + ` LEFT JOIN IMAGES Z ON Z.RID = Q.RID`;
+
+    return query;
+}
+
 // original query: let query = `SELECT Title, dbms_lob.substr(INSTRUCTIONS,2000,1),` +
 //   `dbms_lob.substr(INSTRUCTIONS,2000,2001) FROM RECIPES WHERE Title LIKE '` + name + `%'` +
 //   ` AND ROWNUM <= ` + count;
 //   ` AND ROWNUM <= ` + count;
-//   BUG: UPDATE TO TRANSFORM PICTURE_LINK HASH TO TRUE PICTURE LINK
+//   SELECT Title, RID, PICTURE_LINK FROM RECIPES WHERE Title LIKE 'Chocolate%' AND ROWNUM <= 20
 async function getByName(name, count) {
-  let query = `SELECT Title, RID, PICTURE_LINK FROM RECIPES WHERE Title LIKE '` + name + `%'` +
-   ` AND ROWNUM <= ` + count;
+    let fixName = name.replace(`'`, `''`);
+    let subquery = `SELECT Title, RID FROM RECIPES WHERE Title LIKE '` + fixName + `%'` +
+    ` AND ROWNUM <= ` + count;
+    let query = wrapRecipeQueryWithImages(subquery);
+    console.log(query);
+    const result = await database.simpleExecute(query, {});
 
-  const result = await database.simpleExecute(query, {});
-
-return result.rows;
+    return result.rows;
 }
 
 // gets string that matches specific ingredient
@@ -73,15 +85,19 @@ async function getByIngredientsAnd(id) {
             subquery += ` INTERSECT `;
         }
     }
-    let query = `SELECT R.RID, R.TITLE, R.PICTURE_LINK FROM RECIPES R WHERE R.RID IN (` + subquery + `)`;
+    let outerSubquery = `SELECT R.RID, R.TITLE, R.PICTURE_LINK FROM RECIPES R WHERE R.RID IN (` + subquery + `)`;
+    let query = wrapRecipeQueryWithImages(outerSubquery);
     const result = await database.simpleExecute(query, {});
-    console.log(result);
+    console.log(query);
+
     return result.rows;
 }
 
-// consider caching on first search with a specific fridge
-// current variant --- query takes an average of 38 seconds
-async function getByIngredientsOr(id) {
+
+// query ingredients by OR, sort ingredients by the count
+// of how many ingredients matched
+
+async function getMostRelevantByIngredients(id) {
     let idString = '(';
     for (let i = 0; i < id.length; i++) {
         idString += id[i];
@@ -90,11 +106,25 @@ async function getByIngredientsOr(id) {
         }
     }
     idString += ')';
-    let query = `SELECT DISTINCT(RID), R.TITLE, R.PICTURE_LINK ` +
+    let subquery = `SELECT RID, P.TITLE FROM` +
+    ` (SELECT RID, R.TITLE AS TITLE, R.PICTURE_LINK AS PICTURE_LINK, COUNT(RID) AS COUNT ` +
     `FROM INGREDIENTS I NATURAL JOIN RECIPES R ` +
-    `WHERE I.USDA_ID IN` + idString;
-
+    `WHERE I.USDA_ID IN` + idString + ' GROUP BY RID, R.TITLE, R.PICTURE_LINK ORDER BY COUNT DESC) P WHERE ROWNUM <=50';
+    let query = wrapRecipeQueryWithImages(subquery);
     console.log(query);
+    const result = await database.simpleExecute(query, {});
+
+    return result.rows;
+}
+
+// consider caching on first search with a specific fridge
+// current variant --- query takes an average of 38 seconds
+async function getByIngredientsOr(id) {
+    const idString = sqlString.numString(id);
+    let subquery = `SELECT RID, R.TITLE ` +
+    `FROM INGREDIENTS I NATURAL JOIN RECIPES R ` +
+    `WHERE I.USDA_ID IN` + idString + 'AND ROWNUM <=50';
+    let query = wrapRecipeQueryWithImages(subquery);
     const result = await database.simpleExecute(query, {});
 
     return result.rows;
@@ -133,3 +163,4 @@ module.exports.getByName = getByName;
 module.exports.getByIngredientsOr = getByIngredientsOr;
 module.exports.getHighProtein = getHighProtein;
 module.exports.getRandom = getRandom;
+module.exports.getMostRelevantByIngredients = getMostRelevantByIngredients;

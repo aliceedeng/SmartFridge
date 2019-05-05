@@ -6,11 +6,13 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
-import {clearFridge, removeIngredient} from '../../actions/ingredientAction';
+import {clearFridge, removeIngredient, updateSearchType} from '../../actions/ingredientAction';
 import {CancelTwoTone} from '@material-ui/icons';
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button';
 import Chip from '@material-ui/core/Chip';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 
 const styles = {
   card: {
@@ -34,7 +36,7 @@ const buttonStyle = {
     border: 'None',
     color: 'White',
     fontSize: '80 px',
-    borderRadius:'25px'
+    borderRadius:'5px'
 }
 
 const clearFridgeStyle = {
@@ -43,12 +45,21 @@ const clearFridgeStyle = {
 	border: 'None',
     color: 'White',
     fontSize: '80 px',
-    borderRadius:'25px'
+    borderRadius:'5px'
+}
+
+const buttonStyleAnd = {
+	backgroundColor: '#6ba35e',
+	border: 'None',
+    color: 'White',
+    fontSize: '80 px',
+    borderRadius:'5px'
 }
 
 
 
 const chipStyle = {
+	marginTop:'5px',
 	marginBottom: '5px',
 	marginLeft: '5px'
 }
@@ -66,8 +77,8 @@ const getStyle = function(isIngredient) {
         paddingTop: '100px'
   };
   if (isIngredient) {
-    style.paddingRight = '30px';
-    style.paddingLeft = '800px';
+    style.paddingRight = '800px';
+    style.paddingLeft = '30px';
   } else {
     style.paddingRight = '800px';
     style.paddingLeft = '30px';
@@ -80,7 +91,8 @@ const getStyle = function(isIngredient) {
 function mapStateToProps(state) {
     return(
         {
-            fridgeContents: state.fridge.contents
+            fridgeContents: state.fridge.contents,
+            searchType: state.fridge.searchType
         }
     );
 }
@@ -89,6 +101,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         clearFridge: clearFridge,
+        updateSearchType: updateSearchType,
         removeIngredient: removeIngredient
     }, dispatch);
 }
@@ -102,16 +115,26 @@ class SearchCard extends Component {
     storeText: Function for updating text field of parent component with most recently entered text in search bar
     getText: Function for querying database for information related to current value in text field
     ingredient: boolean giving whether this search card is for searching ingredients (alternatively recipes)
+    updateSearchType: function that changes the search type of the fridge store to a new type based on dropdown ('or', 'and', 'sortedOr')
+    searchType: current search Type
    */
+
 
   render() {
     const storeText = this.props.storeText;
     const getText = this.props.getText;
     let fridge;
     let actions;
+    let description;
     if (this.props.ingredient) {
+    	description = <div style={chipStyle}><button style={clearFridgeStyle}
+                    onClick={(e) => this.props.clearFridge()}
+                    aria-label="Clear items in fridge">
+                     empty fridge
+                </button></div>
 
         fridge = this.props.fridgeContents.map((data) => (
+        	
         		<Chip key={data.id} 
 	        		label={data.name} 
 	        		onDelete={(e) => this.props.removeIngredient(data.id)} 
@@ -129,20 +152,24 @@ class SearchCard extends Component {
         */
         
         actions = (<CardActions className={'actions'}>
-                <button style={clearFridgeStyle}
-                    onClick={(e) => this.props.clearFridge()}
-                    aria-label="Clear items in fridge">
-                     empty fridge
-                </button>
-                <button style={buttonStyle}
-                        onClick={(e) => this.props.handleSearch('or')}
+                
+                <Select
+		            value={this.props.searchType}
+		            onChange={(e) => this.props.updateSearchType(e.target.value)}
+		            displayEmpty
+		            name="age"
+		          >
+		            <MenuItem value={'or'}><em>contains at least one ingredient</em></MenuItem>
+		            <MenuItem value={'and'}>contains all ingredients</MenuItem>
+		            <MenuItem value={'sortedOr'}>most relevant ingredients</MenuItem>
+		          </Select>
+                <button style={buttonStyleAnd}
+                        onClick={() => this.props.handleSearch()}
                         >find me a recipe</button>
-                <Button variant='contained'
-                        className='button'
-                        onClick={(e) => this.props.handleSearch('and')}
-                        color='secondary'>Search Recipe (and)</Button>
+                
             </CardActions>);
     } else {
+    	description = <span/>;
         fridge = <span/>;
         actions = (<CardActions className={'actions'}>
                   	<button style={buttonStyle}>surprise me</button>
@@ -162,7 +189,7 @@ return (
                     <TextField variant="outlined" placeholder={getFlavor(this.props.ingredient)}
                                onKeyDown={(e) => getText(e)} onChange={(e) => storeText(e)}/>
                       <br /><br />
-
+                      {description}
                       {fridge}
                   </CardContent>
                   <Divider variant='middle' />

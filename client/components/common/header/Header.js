@@ -17,6 +17,13 @@ const buttonStyle = {
     fontSize: '30 px'
 };
 
+const titleStyle = {
+    color: 'White',
+    fontSize:'20px',
+    marginLeft:'auto',
+    marginRight:'auto'
+}
+
 
 const styles = theme => ({
     appBar: {
@@ -57,6 +64,7 @@ const RecipeButton = withRouter(({ history }) => (
     </button>
 ));
 
+
 const IngredientButton = withRouter(({ history }) => (
     <button
         style={buttonStyle}
@@ -64,6 +72,16 @@ const IngredientButton = withRouter(({ history }) => (
         onClick={() => { history.push('/ingredients'); }}
     >
         search by ingredient
+    </button>
+));
+
+const CookbookButton = withRouter(({ history }) => (
+    <button
+        style={buttonStyle}
+        type='button'
+        onClick={() => { history.push('/cookbook'); }}
+    >
+        my cookbook
     </button>
 ));
 
@@ -84,10 +102,11 @@ return (
                 <AppBar className={classNames(classes.appBar, navDrawerOpen && classes.appBarShift)}>
                     <Toolbar>
                         <RecipeButton />
-                        <Typography type="title" className={classes.flex}>
-
-                        </Typography>
                         <IngredientButton />
+                        <Typography type="title" style={titleStyle}>
+                            smart fridge
+                        </Typography>
+                        <CookbookButton/>
                     </Toolbar>
                 </AppBar>
             </div>

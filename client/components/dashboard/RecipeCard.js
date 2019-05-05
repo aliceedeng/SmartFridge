@@ -4,13 +4,31 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {ExpandMore, CheckBoxOutlineBlankTwoTone, CheckBoxTwoTone} from '@material-ui/icons';
 import CardActions from '@material-ui/core/CardActions';
 import Divider from '@material-ui/core/Divider';
 import classnames from 'classnames';
 import axios from 'axios';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import CardMedia from '@material-ui/core/CardMedia';
+import { connect } from 'react-redux';
+import inFridge from '../../utils/inFridge';
+import inCookbook from '../../utils/inCookbook';
+import {bindActionCreators} from 'redux';
+import {addRecipe, removeRecipe} from '../../actions/recipeAction';
+import Favorite from '@material-ui/icons/Favorite';
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+import Snackbar from '@material-ui/core/Snackbar';
+import SnackbarContent from '@material-ui/core/SnackbarContent';
+
+const placeholderImgs = [
+    'https://payload.cargocollective.com/1/14/466639/13802007/cake_black_1250.jpg',
+    'https://payload.cargocollective.com/1/14/466639/13802007/winecheesev02-03_1250.jpg',
+    'https://payload.cargocollective.com/1/14/466639/13802007/food_stomachache-01_1250.png',
+    'https://payload.cargocollective.com/1/14/466639/13802007/pancakes-21-21_5_1250.png',
+    'https://payload.cargocollective.com/1/14/466639/13802007/fruitti_tutti-new-05_1250.jpg'
+];
 
 var classes = {
     actions: 'actions',
@@ -18,6 +36,11 @@ var classes = {
     expandOpen: 'expandOpen',
 
 };
+const mediaStyle = {
+    height: 0,
+    paddingTop: '56.25%'
+};
+
 
 const styles = theme => ({
     card: {
@@ -41,16 +64,74 @@ const styles = theme => ({
 
 class RecipeCard extends React.Component {
     /*
-    Props should contain title, rid, imgLink later
+     Props should contain title, rid, picLink later
      */
-    state = {
-        expanded: false,
-        instructions: '',
-        ingredients: ''
-    };
+    constructor(props) {
+        super(props);
+        this.trueLink = this.getTrueLink();
+        this.state = {
+                expanded: false,
+                instructions: '',
+                ingredients: '',
+                open: false
+            };
+    }
+
+    //for snackbar: when adding to fridge and removing from fridge
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+
+        this.setState({ open: false });
+      };
+
+    // returns a link to display with this recipe card
+    // corresponds to a randomly chosen stock image from one of several
+    // if no image is defined
+    getTrueLink() {
+        let trueLink;
+        if (this.props.picLink) {
+            if (this.props.picLink.includes('nophoto')) {
+                const rand = Math.floor(Math.random() * 5);
+                trueLink = placeholderImgs[rand];
+            } else {
+                trueLink = this.props.picLink;
+            }
+        } else {
+            const rand = Math.floor(Math.random() * 5);
+            trueLink = placeholderImgs[rand];
+        }
+
+        return trueLink;
+    }
+
+    handleAddClick = (adding) => {
+        if (adding) {
+            let request = '/api/recipe/facts?id=' + this.props.rid;
+            axios.get(request).
+            then(res => {
+                const recipeFacts = res.data[0];
+                this.props.addRecipe({
+                    title: this.props.title,
+                    rid: this.props.rid,
+                    picLink: this.props.picLink,
+                    calories: recipeFacts.calories,
+                    protein: recipeFacts.protein,
+                    sodium: recipeFacts.sodium,
+                    sugar: recipeFacts.sugar,
+                    cholesterol: recipeFacts.cholesterol
+                });
+            });
+            this.setState({ open: true }); //trigger snackbar
+        } else {
+            console.log(this.props.rid);
+            this.props.removeRecipe(this.props.rid);
+        }
+    }
 
     handleExpandClick = () => {
-        if (!this.state.expanded) {
+        if (!this.state.expanded && this.state.ingredients === '') {
             var request = '/api/recipe/rid/' + this.props.rid;
             axios.get(request)
                 .then(res => {
@@ -62,9 +143,7 @@ class RecipeCard extends React.Component {
                 });
         } else {
             this.setState(state => ({
-                expanded: !state.expanded,
-                instructions: '',
-                ingredients: ''
+                expanded: !state.expanded
             }));
         }
     }
@@ -72,19 +151,64 @@ class RecipeCard extends React.Component {
     //<div style={{ paddingBottom: '10px' }}>
 
     render() {
-        var actionStyle = {}
+        var actionStyle = {};
+        let cookbookButton;
+        if (inCookbook(this.props.cookbookContents, this.props.rid)) {
+            cookbookButton =
+                <IconButton
+                    
+                    onClick={(e) => this.handleAddClick(false)}
+                    aria-label="add to cookbook"
+                    color='secondary'
+                >
+                    <Favorite />
+                </IconButton>;
+        } else {
+            cookbookButton =
+                <IconButton
+                    
+                    onClick={(e) => this.handleAddClick(true)}
+                    aria-label="add to cookbook"
+                >
+                    <FavoriteBorder />
+                </IconButton>;
+        }
+        let ingrList;
         if (this.state.expanded) {
             actionStyle.transform = 'rotate(180deg)';
-            var ingredients = this.state.ingredients;
-            console.log(this.state.ingredients)
-            
-            var ingrList = ingredients.map(function(ingr, index){
-                                            return <li key={ index }>{ingr}</li>;
-                                          });
+            let ingredients = this.state.ingredients;
+
+            ingrList = ingredients.map(function(ingr, index) {
+                let liStyle = {};
+                if (inFridge(this.props.fridgeContents, ingr.USDA_ID)) {
+                    liStyle.fontWeight = 'bold';
+                } else {
+                    liStyle.fontWeight = 'normal';
+                }
+
+                return <li style={liStyle} key={index}>{ingr.INPUT}</li>;
+            }.bind(this));
+
         } else {
             actionStyle.transform = 'rotate(0deg)';
         }
+        let img = <CardMedia
+            style = {mediaStyle}
+            image={this.trueLink}
+            title="Recipe image"/>;
 
+        let facts;
+        if (this.props.cookbook) {
+            facts = (<CardContent>
+                <ul>
+                    <li> {'calories ' + this.props.calories.toFixed(2)}</li>
+                    <li> {'protein ' + this.props.protein.toFixed(2) + ' (g)'}</li>
+                    <li> {'sugar ' + this.props.sugar.toFixed(2) + ' (g)'}</li>
+                    <li> {'sodium ' + this.props.sodium.toFixed(2) + ' (mg)'}</li>
+                    <li> {'cholesterol ' + this.props.cholesterol.toFixed(2) + ' (mg)'}</li>
+                </ul>
+            </CardContent>);
+        }
         return (
             
             <Grid item xs={4}>
@@ -95,6 +219,11 @@ class RecipeCard extends React.Component {
                             {this.props.title}
                         </Typography>
                     </CardContent>
+                    <CardActions className={classes.actions} disableActionSpacing>
+                        
+                    </CardActions>
+                    {img}
+                    {facts}
                     <Divider variant="middle" />
                     <CardActions className={classes.actions} disableActionSpacing>
                         <IconButton
@@ -106,18 +235,28 @@ class RecipeCard extends React.Component {
                             aria-expanded={this.state.expanded}
                             aria-label="Show more"
                         >
-                            <ExpandMoreIcon />
+                            <ExpandMore />
                         </IconButton>
+                        {cookbookButton}
+                        <Snackbar
+                          anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                          }}
+                          open={this.state.open}
+                          autoHideDuration={3000}
+                          onClose={this.handleClose}
+                          message={<span>added to cookbook!</span>}
+                        >
+                          
+                        </Snackbar>
                     </CardActions>
                     <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
                         <CardContent>
                             <Typography paragraph>Ingredients</Typography>
-                            <Typography paragraph>
                                 <ul>
                                     {ingrList}
                                 </ul>
-                                
-                            </Typography>
                             <Typography paragraph>
                                 Instructions
                             </Typography>
@@ -132,9 +271,18 @@ class RecipeCard extends React.Component {
     }
 }
 
-/*
-<Typography component="p">
-            {this.props.instructions}
-</Typography>
- */
-export default RecipeCard;
+function mapStateToProps(state) {
+    return ({
+        fridgeContents: state.fridge.contents,
+        cookbookContents: state.cookbook.contents
+    });
+}
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+        addRecipe: addRecipe,
+        removeRecipe: removeRecipe
+    }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(RecipeCard);

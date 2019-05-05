@@ -20,7 +20,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import {bindActionCreators} from 'redux';
 import {addIngredient, removeIngredient} from '../../actions/ingredientAction';
-
+import inFridge from '../../utils/inFridge';
 var classes = {
     actions: 'actions',
     expand: 'expand',
@@ -55,12 +55,6 @@ const addIngredientStyle = {
     color: 'White',
     fontSize: '80 px',
     borderRadius:'25px'
-}
-
-const inFridge = function(fridge, id) {
-    let index = fridge.map((ingredient) => (ingredient.id)).indexOf(id);
-
-    return index !== -1;
 }
 
 class IngredientCard extends React.Component {
@@ -110,12 +104,7 @@ class IngredientCard extends React.Component {
                 });
         } else {
             this.setState(state => ({
-                expanded: !state.expanded,
-                calories: 0,
-                protein: 0,
-                sodium: 0,
-                cholesterol: 0,
-                sugar: 0
+                expanded: !state.expanded
             }));
         }
     }

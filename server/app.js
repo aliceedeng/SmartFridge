@@ -13,6 +13,7 @@ import webpackConfig from '../webpack/webpack.config.dev';
 
 const database = require('./services/database.js');
 const dbConfig = require('./config/database.js');
+const sqlinjection = require('sql-injection');
 
 // set up database
 async function db_init() {
@@ -26,6 +27,7 @@ async function db_init() {
     process.exit(1); // Non-zero failure code
   }
 }
+
 
 db_init();
 
@@ -47,7 +49,7 @@ app.get('*', (req, res) => {
 
 // Joi Error Handler
 app.use(joiErrorHandler);
-
+app.use(sqlinjection);
 // Error Handler
 app.use(errorHandler.notFoundErrorHandler);
 app.use(errorHandler.errorHandler);

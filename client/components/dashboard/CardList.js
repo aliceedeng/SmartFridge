@@ -26,7 +26,7 @@ const styles = {
 // Recieves component key-value pairs as an object, containing:
 //  resultsData: data output by associated search query
 //  ingredient: boolean giving whether this is a list of ingredients (assumed recipes if not)
-const CardList = ({ resultsData, ingredient } ) => {
+const CardList = ({ resultsData, ingredient, cookbook } ) => {
   let cardsArray;
   if (ingredient) {
       cardsArray = resultsData.map((ingredient, index) => (
@@ -36,9 +36,30 @@ const CardList = ({ resultsData, ingredient } ) => {
           />
     ));
   } else {
-      cardsArray = resultsData.map((recipe, index) => (
-          <RecipeCard key={index} title={recipe.TITLE} rid={recipe.RID} picLink={recipe.PICTURE_LINK}/>
-      ));
+      if (cookbook) {
+          cardsArray = resultsData.map((recipe) => {
+              console.log(recipe);
+
+              return <RecipeCard key={recipe.rid}
+                                 cookbook={true}
+                                 title={recipe.title}
+                                 rid={recipe.rid}
+                                 calories={recipe.calories}
+                                 sugar={recipe.sugar}
+                                 cholesterol={recipe.cholesterol}
+                                 sodium={recipe.sodium}
+                                 protein={recipe.protein}
+                                 picLink={recipe.picLink}/>;
+          });
+      } else {
+          cardsArray = resultsData.map((recipe) => (
+              <RecipeCard key={recipe.RID}
+                          title={recipe.TITLE}
+                          cookbook={false}
+                          rid={recipe.RID}
+                          picLink={recipe.PICTURE_LINK}/>
+          ));
+      }
 
      
   }

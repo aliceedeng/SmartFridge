@@ -10,9 +10,17 @@ router.route('/rid/:rid')
 router.route('/name/:name')
   .get(recipes.getByName);
 
-// this doesn't work yet
+
 router.route('/include')
   .get(recipes.getByIngredientsOr);
+
+// get recipe nutrition facts -- not functional yet
+// expects id query (may be multiple)
+router.route('/facts')
+	.get(recipes.getFacts);
+
+router.route('/relevant')
+	.get(recipes.getMostRelevantByIngredients);
 
 // route for retrieving recipes by anding ingredient ids
 router.route('/exclude')

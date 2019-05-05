@@ -1,12 +1,14 @@
 import {
     INGREDIENT_ADD,
     FRIDGE_CLEAR,
-    INGREDIENT_REMOVE
+    INGREDIENT_REMOVE,
+    UPDATE_SEARCH_TYPE
 } from '../constants/actionType';
 
 // fridge consists of contents array
 let initialState = {
-    contents: []
+    contents: [],
+    searchType: 'or'
 };
 
  /**
@@ -23,6 +25,13 @@ export default function (state, action) {
     let index;
 
     switch (action.type) {
+        case UPDATE_SEARCH_TYPE:
+            newState = Object.assign({}, state, {
+                searchType: action.data
+            });
+
+            return newState;
+
         case INGREDIENT_ADD:
             newState = Object.assign({}, state, {
                 contents: [...state.contents, action.data]
