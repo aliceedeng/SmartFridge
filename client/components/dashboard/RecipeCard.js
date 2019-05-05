@@ -88,7 +88,7 @@ class RecipeCard extends React.Component {
         return trueLink;
     }
     handleExpandClick = () => {
-        if (!this.state.expanded) {
+        if (!this.state.expanded && this.state.ingredients === '') {
             var request = '/api/recipe/rid/' + this.props.rid;
             axios.get(request)
                 .then(res => {
@@ -100,9 +100,7 @@ class RecipeCard extends React.Component {
                 });
         } else {
             this.setState(state => ({
-                expanded: !state.expanded,
-                instructions: '',
-                ingredients: ''
+                expanded: !state.expanded
             }));
         }
     }

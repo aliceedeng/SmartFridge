@@ -104,12 +104,7 @@ class IngredientCard extends React.Component {
                 });
         } else {
             this.setState(state => ({
-                expanded: !state.expanded,
-                calories: 0,
-                protein: 0,
-                sodium: 0,
-                cholesterol: 0,
-                sugar: 0
+                expanded: !state.expanded
             }));
         }
     }
