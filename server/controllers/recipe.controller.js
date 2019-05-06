@@ -188,7 +188,7 @@ export async function getHighProtein(req, res, next) {
     if (req.params.name && req.query.len) {
         const len = parseInt(req.query.len);
         const name = req.params.name;
-        const rows = await recipe.getHighProtein(name, len);
+        const rows = await recipe.getExtremeNutrient(name, len, 'PROTEIN', 0.9, '>');
         res.status(200).json(rows);
     }
   } catch (err) {
@@ -196,12 +196,52 @@ export async function getHighProtein(req, res, next) {
   }
 }
 
+export async function getLowSodium(req, res, next) {
+    try {
+        if (req.params.name && req.query.len) {
+            const len = parseInt(req.query.len);
+            const name = req.params.name;
+            const rows = await recipe.getExtremeNutrient(name, len, 'SODIUM', 0.1, '<');
+            res.status(200).json(rows);
+        }
+    } catch (err) {
+        next(err);
+    }
+}
+
+export async function getLowCalories(req, res, next) {
+    try {
+        if (req.params.name && req.query.len) {
+            const len = parseInt(req.query.len);
+            const name = req.params.name;
+            const rows = await recipe.getExtremeNutrient(name, len, 'CAL', 0.1, '<');
+            res.status(200).json(rows);
+        }
+    } catch (err) {
+        next(err);
+    }
+}
+
 export async function getLowSugar(req, res, next) {
+    try {
+        if (req.params.name && req.query.len) {
+            const len = parseInt(req.query.len);
+            const name = req.params.name;
+            const rows = await recipe.getExtremeNutrient(name, len, 'SUGAR', 0.1, '<');
+            res.status(200).json(rows);
+        }
+    } catch (err) {
+        next(err);
+    }
+}
+
+
+export async function getLowCholesterol(req, res, next) {
   try {
     if (req.params.name && req.query.len) {
         const len = parseInt(req.query.len);
         const name = req.params.name;
-        const rows = await recipe.getHighProtein(name, len);
+        const rows = await recipe.getExtremeNutrient(name, len, 'CHOLESTEROL', 0.1, '<');
         res.status(200).json(rows);
     }
   } catch (err) {

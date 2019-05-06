@@ -121,18 +121,22 @@ async function getByIngredientsOr(id) {
 }
 
 // gets recipes with at least one ingredient with high level of protein
-async function getHighProtein(name, count) {
+async function getExtremeNutrient(name, count, nutrient, amount, direction) {
   let fixName = name.replace(`'`, `''`);
-  let subquery = `SELECT DISTINCT Title, RID
+  let subquery = `SELECT Title, RID FROM
+                  (SELECT DISTINCT Title, RID
                   FROM RECIPES r
                   WHERE RID IN
                   (SELECT RID FROM INGREDIENTS i
                   NATURAL JOIN
-                  (SELECT USDA_ID, PROTEIN
+                  (SELECT USDA_ID, ` + nutrient + ` 
                   FROM USDA) u
-                  WHERE u.PROTEIN > 15)
-                  AND Title LIKE '` + fixName + `%'` +
-                  ` AND ROWNUM <= ` + count;
+                  WHERE u.` + nutrient + ` ` + direction + `  
+                  (SELECT PERCENTILE_CONT(` + amount + `) WITHIN GROUP
+                   (order by PROTEIN) FROM USDA))
+                  AND Title LIKE '` + fixName + `%') 
+                  WHERE ROWNUM <= ` + count;
+  console.log(subquery);
   let query = wrapRecipeQueryWithImages(subquery);
   const result = await database.simpleExecute(query, {});
 
@@ -173,7 +177,7 @@ module.exports.find = find;
 module.exports.instructions = instructions;
 module.exports.getByName = getByName;
 module.exports.getByIngredientsOr = getByIngredientsOr;
-module.exports.getHighProtein = getHighProtein;
+module.exports.getExtremeNutrient = getExtremeNutrient;
 module.exports.getLowSugar = getLowSugar;
 module.exports.getRandom = getRandom;
 module.exports.getMostRelevantByIngredients = getMostRelevantByIngredients;

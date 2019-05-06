@@ -55,6 +55,10 @@ class RecipeDashboard extends Component {
         this.state = { recipes: [], hasRecipes: false };
     }
 
+    componentDidMount() {
+        this.handleRandom();
+    }
+
     // populates the list of recipes with a random set of recipes
     handleRandom() {
         const request = '/api/recipe/random';
@@ -83,11 +87,11 @@ class RecipeDashboard extends Component {
             } else if (this.props.searchFilter === SUGAR_FILTER) {
                 request = '/api/recipe/sugar/' + recipe + '?len=' + length;
             } else if (this.props.searchFilter === CHOLESTEROL_FILTER) {
-                // TODO
+                request = '/api/recipe/cholesterol/' + recipe + '?len=' + length;
             } else if (this.props.searchFilter === SODIUM_FILTER) {
-                // TODO
+                request = '/api/recipe/sodium/' + recipe + '?len=' + length;
             } else if (this.props.searchFilter === CALORIES_FILTER) {
-                // TODO
+                request = '/api/recipe/calories/' + recipe + '?len=' + length;
             } else {
                 request = '/api/recipe/name/' + recipe + '?len=' + length;
             }
