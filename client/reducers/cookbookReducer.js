@@ -2,8 +2,11 @@ import
 {
     RECIPE_ADD,
     BOOK_CLEAR,
-    RECIPE_REMOVE
+    RECIPE_REMOVE,
+    UPDATE_SEARCH_FILTER
 } from '../constants/actionType';
+
+import { NONE_FILTER } from '../constants/searchFilters';
 
 // fridge consists of contents array
 let initialState = {
@@ -14,7 +17,8 @@ let initialState = {
         protein: 0,
         cholesterol: 0,
         sodium: 0
-    }
+    },
+    searchFilter: NONE_FILTER
 };
 
 const updateSummary = function(contents) {
@@ -61,6 +65,13 @@ export default function (state, action) {
     let newContents;
 
     switch (action.type) {
+        case UPDATE_SEARCH_FILTER:
+            newState = Object.assign({}, state, {
+                searchFilter: action.data
+            });
+
+            return newState;
+
         case RECIPE_ADD:
             newContents = [...state.contents, action.data]
             newState = Object.assign({}, state, {

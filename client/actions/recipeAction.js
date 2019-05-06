@@ -2,7 +2,8 @@ import
 {
     RECIPE_ADD,
     RECIPE_REMOVE,
-    BOOK_CLEAR
+    BOOK_CLEAR,
+    UPDATE_SEARCH_FILTER,
 } from '../constants/actionType';
 
 
@@ -20,6 +21,15 @@ export function addRecipe(data) {
         type: RECIPE_ADD,
         data: trueData
     };
+}
+
+// updates the search filter to the filter given
+// by data -- expects a single string
+export function updateSearchFilter(data) {
+    return {
+        type: UPDATE_SEARCH_FILTER,
+        data: data
+    }
 }
 
 // action for clearing the entire recipe.contents array
