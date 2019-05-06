@@ -69,7 +69,7 @@ async function getByName(name, count) {
     let subquery = `SELECT Title, RID FROM RECIPES WHERE Title LIKE '` + fixName + `%'` +
     ` AND ROWNUM <= ` + count;
     let query = wrapRecipeQueryWithImages(subquery);
-    console.log(query);
+    // console.log(query);
     const result = await database.simpleExecute(query, {});
 
     return result.rows;

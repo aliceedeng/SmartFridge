@@ -3,8 +3,7 @@ import Fuse from 'fuse.js';
 const fuzzysort = require('fuzzysort');
 const recipe = require('../db/recipe.js');
 const ingredient  = require('../db/ingredient.js');
-
-var allRecipeNames;
+const cache = require('../config/cache');
 
 const fuseOptions = {
     shouldSort: true,
@@ -47,51 +46,99 @@ export async function getById(req, res, next) {
   }
 }
 
+
+export async function getAllRecipeNames(req, res, next) {
+  try {
+    var rows = await recipe.getAllRecipeNames();
+    res.send(rows);
+  } catch (err) {
+    next(err);
+  }
+}
+
 // gets a recipe by name (recipes that start with a particular string)
 // SHOULD BE CONVERTED TO FUZZY MATCHING
 export async function getByName(req, res, next) {
   try {
+    if (!req.params.name) {
+      res.status(404).end();
+    }
     // IMPLEMENTATION WITH fuzzysort
     let name = req.params.name;
     console.log(name);
     var rows = [];
     if (fuzzy) {
-      if (!allRecipeNames) {
-        // we store this to make it more efficient for future queries
-          allRecipeNames = await recipe.getAllRecipeNames();
-          allRecipeNames = {}
-      }
-      // console.log('done');
-      // console.log(allRecipeNames[0]);
-
-      const options = {
-        keys: ['TITLE'],
-        limit: 20, // TODO
-        threshold: -10000
-      }
-      const desiredTitles = fuzzysort.go(name, allRecipeNames, options);
-
-      // console.log(desiredTitles);
-      var arrayLength = desiredTitles.length;
-      for (var i = 0; i < arrayLength; i++) {
-          // console.log(desiredTitles[i][0].target);
-          const thisRecipe = await recipe.getByName(desiredTitles[i][0].target, 1);
-          rows = rows.concat(thisRecipe);
-      }
+      // if (!allRecipeNames) {
+      //     // cache this for efficiency
+      //     allRecipeNames = await recipe.getAllRecipeNames();
+      //     localStorage.setItem('recipes', {'data': allRecipeNames});
+      // } else {
+      //     allRecipeNames = allRecipeNames.get('data');
+      // }
+      const CACHE_KEY = 'allRecipeNames';
+      var allRecipeNames;
+      await cache.instance().get(CACHE_KEY, async function(err, value) {
+          if (err)
+              console.error(err);
+          if (value == undefined) {
+              allRecipeNames = await recipe.getAllRecipeNames();
+              rows = await getByNameHelper(name, allRecipeNames);
+              await cache.instance().set(CACHE_KEY, allRecipeNames, 1000, async function(err, success) {
+                  if (!err && success) {
+                      console.log('success');
+                      if (rows.length === 1) {
+                        res.status(200).json(rows[0]);
+                      } else {
+                        res.status(200).json(rows);
+                      }
+                  } else {
+                      next(err);
+                  }
+              });
+          } else {
+              allRecipeNames = value;
+              rows = await getByNameHelper(name, allRecipeNames);
+              if (rows.length === 1) {
+                res.status(200).json(rows[0]);
+              } else {
+                res.status(200).json(rows);
+              }
+          }
+      });
     } else {
       rows = await recipe.getByName(name, 20);
-    }
-    if (req.params.name) {
       if (rows.length === 1) {
-          res.status(200).json(rows[0]);
+        res.status(200).json(rows[0]);
+      } else {
+        res.status(200).json(rows);
       }
-      res.status(200).json(rows);
-    } else {
-      res.status(404).end();
     }
   } catch (err) {
     next(err);
   }
+}
+
+async function getByNameHelper(name, allRecipeNames) {
+  var rows = [];
+  console.log('done');
+  console.log(allRecipeNames[0]);
+
+  const options = {
+    keys: ['TITLE'],
+    limit: 20, // TODO
+    threshold: -10000
+  }
+  const desiredTitles = fuzzysort.go(name, allRecipeNames, options);
+
+  // console.log(desiredTitles);
+  var arrayLength = desiredTitles.length;
+  for (var i = 0; i < arrayLength; i++) {
+      // console.log(desiredTitles[i][0].target);
+      const thisRecipe = await recipe.getByName(desiredTitles[i][0].target, 1);
+      rows = rows.concat(thisRecipe);
+  }
+  console.log(rows);
+  return rows;
 }
 
 // helper function for controllers that manage
@@ -225,7 +272,7 @@ export async function getMostRelevantByIngredients(req, res, next) {
         //rows.forEach((item) => rowSet.add(item));
         //rows = Array.from(rowSet)
 
-        console.log("hi");
+        // console.log("hi");
 
         res.status(200).json(rows);
     } else {

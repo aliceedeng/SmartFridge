@@ -1,6 +1,7 @@
 import path from 'path';
 import app from './config/express';
 import routes from './routes/index.route';
+import cache from './config/cache';
 import * as errorHandler from './middlewares/errorHandler';
 import joiErrorHandler from './middlewares/joiErrorHandler';
 import express from 'express';
@@ -23,13 +24,19 @@ async function db_init() {
     await database.initialize();
   } catch (err) {
     console.error(err);
-
-    process.exit(1); // Non-zero failure code
+    process.exit(1); // code failure
   }
 }
 
-
 db_init();
+
+cache.start(function(err) {
+    if (err) {
+        console.error(err);
+        process.exit(1); // code failure
+    }
+})
+
 
 app.use('/dist', express.static('./dist'));
 

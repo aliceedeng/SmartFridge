@@ -5,7 +5,7 @@ const router = express.Router();
 const recipes = require('../controllers/recipe.controller.js');
 
 router.route('/rid/:rid')
-   .get(recipes.getById);
+  .get(recipes.getById);
 
 router.route('/name/:name')
   .get(recipes.getByName);
@@ -23,7 +23,7 @@ router.route('/relevant')
 
 // route for retrieving recipes by anding ingredient ids
 router.route('/exclude')
-    .get(recipes.getByIngredientsAnd);
+  .get(recipes.getByIngredientsAnd);
 
 router.route('/protein/:name')
   .get(recipes.getHighProtein);
@@ -33,5 +33,9 @@ router.route('/sugar/:name')
 
 router.route('/random/')
   .get(recipes.getRandom);
+
+// use this for recipe
+router.route('/allbyname/')
+  .get(recipes.getAllRecipeNames);
 
 export default router;
