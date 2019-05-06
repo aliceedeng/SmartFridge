@@ -11,6 +11,11 @@ import {CancelTwoTone} from '@material-ui/icons';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import Chip from '@material-ui/core/Chip';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 
 const styles = {
     card: {
@@ -34,16 +39,7 @@ const buttonStyle = {
     border: 'None',
     color: 'White',
     fontSize: '80 px',
-    borderRadius:'25px'
-};
-
-const clearFridgeStyle = {
-
-    backgroundColor: '#ef56a2',
-    border: 'None',
-    color: 'White',
-    fontSize: '80 px',
-    borderRadius:'25px'
+    borderRadius:'5px'
 };
 
 const buttonStyleAnd = {
@@ -52,6 +48,16 @@ const buttonStyleAnd = {
     color: 'White',
     fontSize: '80 px',
     borderRadius:'25px'
+};
+
+
+const clearFridgeStyle = {
+
+    backgroundColor: '#ef56a2',
+    border: 'None',
+    color: 'White',
+    fontSize: '80 px',
+    borderRadius:'5px'
 };
 
 
@@ -111,20 +117,37 @@ class CookbookSummary extends Component {
      */
 
     render() {
-        let facts = (<ul>
-            <li> {'avg calories ' + this.props.summaryFacts.calories}</li>
-            <li> {'avg protein ' + this.props.summaryFacts.protein + ' (g)'}</li>
-            <li> {'avg sugar ' + this.props.summaryFacts.sugar + ' (g)'}</li>
-            <li> {'avg sodium ' + this.props.summaryFacts.sodium + ' (mg)'}</li>
-            <li> {'avg cholesterol ' + this.props.summaryFacts.cholesterol + ' (mg)'}</li>
-        </ul>);
+        let factsTable = <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell align="right">average Calories</TableCell>
+                <TableCell align="right">average protein</TableCell>
+                <TableCell align="right">average sugar</TableCell>
+                <TableCell align="right">average sodium</TableCell>
+                <TableCell align="right">average cholesterol</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              
+                <TableRow>
+                  <TableCell align="right">{this.props.summaryFacts.calories.toFixed(2)}</TableCell>
+                  <TableCell align="right">{this.props.summaryFacts.protein.toFixed(2) + ' (g)'}</TableCell>
+                  <TableCell align="right">{this.props.summaryFacts.sugar.toFixed(2) + ' (g)'}</TableCell>
+                  <TableCell align="right">{this.props.summaryFacts.sodium.toFixed(2) + ' (mg)'}</TableCell>
+                  <TableCell align="right">{this.props.summaryFacts.cholesterol.toFixed(2) + ' (mg)'}</TableCell>
+                </TableRow>
+            
+            </TableBody>
+          </Table>
+
+        
         let actions;
 
         actions = (<CardActions className={'actions'}>
             <button style={clearFridgeStyle}
                     onClick={(e) => this.props.clearCookbook()}
                     aria-label="Clear items in fridge">
-                empty cookbook
+                clear cookbook
             </button>
         </CardActions>);
 
@@ -134,9 +157,11 @@ return (
                 <Card>
 
                     <CardContent>
-                        {facts}
+                        {factsTable}
+                    
+                        
                     </CardContent>
-                    <Divider variant='middle' />
+                    
                     {actions}
                 </Card>
             </div>
