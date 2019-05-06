@@ -21,6 +21,12 @@ import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+
 
 const placeholderImgs = [
     'https://payload.cargocollective.com/1/14/466639/13802007/cake_black_1250.jpg',
@@ -199,15 +205,34 @@ class RecipeCard extends React.Component {
 
         let facts;
         if (this.props.cookbook) {
-            facts = (<CardContent>
-                <ul>
-                    <li> {'calories ' + this.props.calories.toFixed(2)}</li>
-                    <li> {'protein ' + this.props.protein.toFixed(2) + ' (g)'}</li>
-                    <li> {'sugar ' + this.props.sugar.toFixed(2) + ' (g)'}</li>
-                    <li> {'sodium ' + this.props.sodium.toFixed(2) + ' (mg)'}</li>
-                    <li> {'cholesterol ' + this.props.cholesterol.toFixed(2) + ' (mg)'}</li>
-                </ul>
-            </CardContent>);
+            facts = (<Table>
+            <TableBody>
+              <TableRow>
+                <TableCell align="left">calories</TableCell>
+                <TableCell align="left">{this.props.calories.toFixed(2)}</TableCell>
+              </TableRow>
+                <TableRow>
+                  <TableCell align="left">protein</TableCell>
+                  <TableCell align="left">{this.props.protein.toFixed(2) + ' (g)'}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell align="left">sugar</TableCell>
+                  <TableCell align="left">{this.props.sugar.toFixed(2) + ' (g)'}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell align="left">sodium</TableCell>
+                  <TableCell align="left">{this.props.sodium.toFixed(2) + ' (mg)'}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell align="left">cholesterol</TableCell>
+                  <TableCell align="left">{this.props.cholesterol.toFixed(2) + ' (mg)'}</TableCell>
+                </TableRow>
+            
+            </TableBody>
+          </Table>);
+
+
+
         }
         return (
             
