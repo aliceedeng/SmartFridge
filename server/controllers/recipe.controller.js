@@ -50,33 +50,28 @@ export async function getById(req, res, next) {
 // gets a recipe by name (recipes that start with a particular string)
 // SHOULD BE CONVERTED TO FUZZY MATCHING
 export async function getByName(req, res, next) {
-  try {
-    // IMPLEMENTATION WITH fuzzysort
-    let name = req.params.name;
-    console.log(name);
-    var rows = [];
-    if (req.query.fuzzy) {
-      const desiredTitles = getRecipeTitlesFuzzy(name, 20);
-
-      var arrayLength = desiredTitles.length;
-      for (var i = 0; i < arrayLength; i++) {
-          const thisRecipe = await recipe.getByName(desiredTitles[i][0].target, 1);
-          rows = rows.concat(thisRecipe);
-      }
-    } else {
-      rows = await recipe.getByName(name, 20);
+    try {
+        if (req.params.name && req.query.len) {
+            const len = parseInt(req.query.len);
+            const name = req.params.name;
+            var rows = [];
+            if (req.query.fuzzy) {
+                const desiredTitles = await getRecipeTitlesFuzzy(name, req.query.len);
+                var searchLength = Math.min(desiredTitles.length, req.query.len);
+                for (var i = 0; i < searchLength; i++) {
+                    const thisRecipe = await recipe.getByName(desiredTitles[i][0].target, 1);
+                    rows = rows.concat(thisRecipe);
+                }
+            } else {
+                rows = await recipe.getByName(name, len);
+            }
+            res.status(200).json(rows);
+        } else {
+            res.status(404).end();
+        }
+    } catch (err) {
+        next(err);
     }
-    if (req.params.name) {
-      if (rows.length === 1) {
-          res.status(200).json(rows[0]);
-      }
-      res.status(200).json(rows);
-    } else {
-      res.status(404).end();
-    }
-  } catch (err) {
-    next(err);
-  }
 }
 
 // helper function for controllers that manage
@@ -271,7 +266,7 @@ export async function getLowSodium(req, res, next) {
             const name = req.params.name;
             var rows = [];
             if (req.query.fuzzy) {
-                const desiredTitles = getRecipeTitlesFuzzy(name, req.query.len);
+                const desiredTitles = await getRecipeTitlesFuzzy(name, req.query.len);
                 var searchLength = Math.min(desiredTitles.length, req.query.len);
                 for (var i = 0; i < searchLength; i++) {
                     const thisRecipe = await recipe.getExtremeNutrient(desiredTitles[i][0].target, 1, 'SODIUM', 0.1, '<');
@@ -296,7 +291,7 @@ export async function getLowCalories(req, res, next) {
             const name = req.params.name;
             var rows = [];
             if (req.query.fuzzy) {
-                const desiredTitles = getRecipeTitlesFuzzy(name, req.query.len);
+                const desiredTitles = await getRecipeTitlesFuzzy(name, req.query.len);
                 var searchLength = Math.min(desiredTitles.length, req.query.len);
                 for (var i = 0; i < searchLength; i++) {
                     const thisRecipe = await recipe.getExtremeNutrient(desiredTitles[i][0].target, 1, 'CAL', 0.1, '<');
@@ -321,7 +316,7 @@ export async function getLowSugar(req, res, next) {
           const name = req.params.name;
           var rows = [];
           if (req.query.fuzzy) {
-              const desiredTitles = getRecipeTitlesFuzzy(name, req.query.len);
+              const desiredTitles = await getRecipeTitlesFuzzy(name, req.query.len);
               var searchLength = Math.min(desiredTitles.length, req.query.len);
               for (var i = 0; i < searchLength; i++) {
                   const thisRecipe = await recipe.getExtremeNutrient(desiredTitles[i][0].target, 1, 'SUGAR', 0.1, '<');
@@ -347,7 +342,7 @@ export async function getLowCholesterol(req, res, next) {
           const name = req.params.name;
           var rows = [];
           if (req.query.fuzzy) {
-              const desiredTitles = getRecipeTitlesFuzzy(name, req.query.len);
+              const desiredTitles = await getRecipeTitlesFuzzy(name, req.query.len);
               var searchLength = Math.min(desiredTitles.length, req.query.len);
               for (var i = 0; i < searchLength; i++) {
                   const thisRecipe = await recipe.getExtremeNutrient(desiredTitles[i][0].target, 1, 'CHOLESTEROL', 0.1, '<');
