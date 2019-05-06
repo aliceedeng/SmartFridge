@@ -175,6 +175,7 @@ class SearchCard extends Component {
                   	<button style={buttonStyle} onClick={() => updateSearchFilter('NONE')}>clear filters</button>
                     <button style={buttonStyle} onClick={() => updateSearchFilter('PROTEIN')}>high protein</button>
                     <button style={buttonStyle} onClick={() => updateSearchFilter('SUGAR')}>low sugar</button>
+                  	<button style={buttonStyle} onClick={(e) => this.props.handleRandom()}>surprise me</button>
                   </CardActions>);
     }
 return (

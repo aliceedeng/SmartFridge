@@ -46,11 +46,21 @@ class RecipeDashboard extends Component {
         super(props);
         this.storeText = this.storeText.bind(this);
         this.getText = this.getText.bind(this);
+        this.handleRandom = this.handleRandom.bind(this);
         this.searchText = '';
         this.searchFilter = 'NONE';
         this.updateSearchFilter = this.updateSearchFilter.bind(this);
         // this.recipes = new Array(10);
         this.state = { recipes: [], hasRecipes: false };
+    }
+
+    // populates the list of recipes with a random set of recipes
+    handleRandom() {
+        const request = '/api/recipe/random';
+        axios.get(request)
+            .then(res => {
+                this.setState({recipes:res.data, hasRecipes: true});
+            });
     }
 
     updateSearchFilter(newFilter) {
@@ -90,7 +100,11 @@ class RecipeDashboard extends Component {
 
     render() {
         let display;
-        display = <SearchCard storeText={this.storeText} getText={this.getText} ingredient={false} updateSearchFilter={this.updateSearchFilter}/>;
+        display = <SearchCard storeText={this.storeText}
+                              getText={this.getText}
+                              handleRandom={this.handleRandom}
+                              updateSearchFilter={this.updateSearchFilter}
+                              ingredient={false} />;
 
         let recipeCards;
         if (this.state.hasRecipes) {

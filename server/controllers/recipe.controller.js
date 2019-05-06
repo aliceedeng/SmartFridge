@@ -209,6 +209,7 @@ export async function getLowSugar(req, res, next) {
   }
 }
 
+// returns a set of 50 random recipes
 export async function getRandom(req, res, next) {
   try {
     const rows = await recipe.getRandom();

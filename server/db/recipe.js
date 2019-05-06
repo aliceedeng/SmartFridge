@@ -157,11 +157,12 @@ async function getLowSugar(name, count) {
   return result.rows;
 }
 
-
-
+// returns a set of 50 random recipes
 async function getRandom() {
-  var query = `SELECT * FROM RECIPES WHERE ROWNUM = 1`;
-
+  let subquery = `SELECT RID, TITLE FROM   (SELECT RID, TITLE FROM recipes ORDER BY DBMS_RANDOM.VALUE)
+    WHERE  rownum < 51`;
+  let query = wrapRecipeQueryWithImages(subquery);
+  console.log(query);
   const result = await database.simpleExecute(query, {});
 
 return result.rows;
