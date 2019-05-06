@@ -56,7 +56,9 @@ class RecipeDashboard extends Component {
     }
 
     componentDidMount() {
-        this.handleRandom();
+        if (this.state.recipes.length === 0) {
+            this.handleRandom();
+        }
     }
 
     // populates the list of recipes with a random set of recipes
@@ -95,6 +97,10 @@ class RecipeDashboard extends Component {
             } else {
                 request = '/api/recipe/name/' + recipe + '?len=' + length;
             }
+            if (this.props.searchFuzzy) {
+                request += '&fuzzy=true';
+            }
+
             console.log(request);
             axios.get(request)
                 .then(res => {
@@ -141,7 +147,8 @@ return (
 
 function mapStateToProps(state) {
     return {
-        searchFilter: state.cookbook.searchFilter
+        searchFilter: state.cookbook.searchFilter,
+        searchFuzzy: state.cookbook.searchFuzzy
     };
 }
 

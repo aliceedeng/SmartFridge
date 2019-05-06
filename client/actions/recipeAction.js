@@ -4,6 +4,7 @@ import
     RECIPE_REMOVE,
     BOOK_CLEAR,
     UPDATE_SEARCH_FILTER,
+    UPDATE_SEARCH_FUZZY
 } from '../constants/actionType';
 
 
@@ -30,6 +31,15 @@ export function updateSearchFilter(data) {
         type: UPDATE_SEARCH_FILTER,
         data: data
     }
+}
+
+// updates fuzzy string matching to be the opposite of
+// its current value
+export function updateSearchFuzzy(newValue) {
+    return {
+        type: UPDATE_SEARCH_FUZZY,
+        data: newValue
+    };
 }
 
 // action for clearing the entire recipe.contents array

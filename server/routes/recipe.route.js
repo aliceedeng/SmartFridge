@@ -21,6 +21,9 @@ router.route('/facts')
 router.route('/relevant')
 	.get(recipes.getMostRelevantByIngredients);
 
+router.route('/normrelevant')
+    .get(recipes.getMostRelevantNormalizedByIngredients);
+
 // route for retrieving recipes by anding ingredient ids
 router.route('/exclude')
     .get(recipes.getByIngredientsAnd);

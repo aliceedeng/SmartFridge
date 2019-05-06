@@ -3,7 +3,8 @@ import
     RECIPE_ADD,
     BOOK_CLEAR,
     RECIPE_REMOVE,
-    UPDATE_SEARCH_FILTER
+    UPDATE_SEARCH_FILTER,
+    UPDATE_SEARCH_FUZZY
 } from '../constants/actionType';
 
 import { NONE_FILTER } from '../constants/searchFilters';
@@ -18,7 +19,8 @@ let initialState = {
         cholesterol: 0,
         sodium: 0
     },
-    searchFilter: NONE_FILTER
+    searchFilter: NONE_FILTER,
+    searchFuzzy: false
 };
 
 const updateSummary = function(contents) {
@@ -65,6 +67,13 @@ export default function (state, action) {
     let newContents;
 
     switch (action.type) {
+        case UPDATE_SEARCH_FUZZY:
+            newState = Object.assign({}, state, {
+                searchFuzzy: action.data
+            });
+
+            return newState;
+
         case UPDATE_SEARCH_FILTER:
             newState = Object.assign({}, state, {
                 searchFilter: action.data

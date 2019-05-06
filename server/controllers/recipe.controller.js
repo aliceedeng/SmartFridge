@@ -54,6 +54,8 @@ async function getByIngredients(type, id) {
     return await recipe.getByIngredientsOr(id);
   } else if (type === 'sortedOr') {
     return await recipe.getMostRelevantByIngredients(id);
+  } else if (type === 'normOr') {
+      return await recipe.getMostRelevantNormalizedByIngredients(id);
   }
 }
 
@@ -160,20 +162,6 @@ export async function getMostRelevantByIngredients(req, res, next) {
     if (req.query.id) {
         let rows = await getByIngredients('sortedOr', req.query.id);
 
-        //get unique elements
-        //let rowSet = new Set()
-
-        //console.log(rows);
-        //for(let item of rows) {
-          //console.log(item)
-          //rowSet.add(item)
-        //}
-
-        //rows.forEach((item) => rowSet.add(item));
-        //rows = Array.from(rowSet)
-
-        console.log("hi");
-
         res.status(200).json(rows);
     } else {
       res.status(404).end();
@@ -181,6 +169,22 @@ export async function getMostRelevantByIngredients(req, res, next) {
   } catch (err) {
     next(err);
   }
+}
+
+//given a list of ingredient ids, returns all recipes
+//that match the most ingredients
+export async function getMostRelevantNormalizedByIngredients(req, res, next) {
+    try {
+        if (req.query.id) {
+            let rows = await getByIngredients('normOr', req.query.id);
+
+            res.status(200).json(rows);
+        } else {
+            res.status(404).end();
+        }
+    } catch (err) {
+        next(err);
+    }
 }
 
 export async function getHighProtein(req, res, next) {

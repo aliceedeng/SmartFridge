@@ -7,7 +7,9 @@ import {bindActionCreators} from 'redux';
 import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
 import {clearFridge, removeIngredient, updateSearchType} from '../../actions/ingredientAction';
-import {updateSearchFilter} from '../../actions/recipeAction';
+import {updateSearchFilter, updateSearchFuzzy} from '../../actions/recipeAction';
+import Checkbox from '@material-ui/core/Checkbox';
+
 import {
     PROTEIN_FILTER,
     CALORIES_FILTER,
@@ -95,7 +97,8 @@ function mapStateToProps(state) {
         {
             fridgeContents: state.fridge.contents,
             searchType: state.fridge.searchType,
-            searchFilter: state.cookbook.searchFilter
+            searchFilter: state.cookbook.searchFilter,
+            searchFuzzy: state.cookbook.searchFuzzy
         }
     );
 }
@@ -106,7 +109,8 @@ function mapDispatchToProps(dispatch) {
         clearFridge: clearFridge,
         updateSearchType: updateSearchType,
         updateSearchFilter: updateSearchFilter,
-        removeIngredient: removeIngredient
+        removeIngredient: removeIngredient,
+        updateSearchFuzzy: updateSearchFuzzy
     }, dispatch);
 }
 
@@ -124,6 +128,14 @@ class SearchCard extends Component {
     searchFilter: includes filtering for special type of recipe search (TODO: allow for multiple filters)
    */
 
+  constructor(props) {
+      super(props);
+      this.handleFuzzyChange = this.handleFuzzyChange.bind(this);
+  }
+
+  handleFuzzyChange(e) {
+      this.props.updateSearchFuzzy(!this.props.searchFuzzy);
+  }
 
   render() {
     const storeText = this.props.storeText;
@@ -166,7 +178,8 @@ class SearchCard extends Component {
 		          >
 		            <MenuItem value={'or'}><em>contains at least one ingredient</em></MenuItem>
 		            <MenuItem value={'and'}>contains all ingredients</MenuItem>
-		            <MenuItem value={'sortedOr'}>most relevant ingredients</MenuItem>
+		            <MenuItem value={'sortedOr'}>most matched</MenuItem>
+                    <MenuItem value={'normOr'}>most relevant</MenuItem>
 		          </Select>
                 <button style={buttonStyleAnd}
                         onClick={() => this.props.handleSearch()}
@@ -186,7 +199,12 @@ class SearchCard extends Component {
                 <MenuItem value={CHOLESTEROL_FILTER}>low cholesterol</MenuItem>
                 <MenuItem value={SODIUM_FILTER}>low sodium</MenuItem>
                     <MenuItem value={CALORIES_FILTER}>low calories</MenuItem>
-            </Select></span>;
+            </Select>     exact keyword:
+            <Checkbox
+                checked={!this.props.searchFuzzy}
+                onChange={this.handleFuzzyChange}
+            />
+            </span>;
         actions = (<CardActions className={'actions'}>
                 
                 <button style={buttonStyle} onClick={(e) => this.props.handleRandom()}>surprise me</button>
