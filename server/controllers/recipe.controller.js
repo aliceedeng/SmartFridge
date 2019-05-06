@@ -1,26 +1,10 @@
-import Fuse from 'fuse.js';
-
 const fuzzysort = require('fuzzysort');
 const recipe = require('../db/recipe.js');
 const ingredient  = require('../db/ingredient.js');
 
 var allRecipeNames;
 
-const fuseOptions = {
-    shouldSort: true,
-    tokenize: true, // not sure about this one
-    findAllMatches: false, // not sure about this one
-    threshold: 1.0,
-    location: 1,
-    distance: 1000,
-    maxPatternLength: 64,
-    minMatchCharLength: 1,
-    keys: [
-        'Title'
-    ]
-};
 const fuzzy = true;
-const getAll = true;
 
 const factUtils = require('../utils/factUtils.js');
 
@@ -57,12 +41,9 @@ export async function getByName(req, res, next) {
     var rows = [];
     if (fuzzy) {
       if (!allRecipeNames) {
-        // we store this to make it more efficient for future queries
+          // we store this to make it more efficient for future queries
           allRecipeNames = await recipe.getAllRecipeNames();
-          allRecipeNames = {}
       }
-      // console.log('done');
-      // console.log(allRecipeNames[0]);
 
       const options = {
         keys: ['TITLE'],
@@ -71,10 +52,8 @@ export async function getByName(req, res, next) {
       }
       const desiredTitles = fuzzysort.go(name, allRecipeNames, options);
 
-      // console.log(desiredTitles);
       var arrayLength = desiredTitles.length;
       for (var i = 0; i < arrayLength; i++) {
-          // console.log(desiredTitles[i][0].target);
           const thisRecipe = await recipe.getByName(desiredTitles[i][0].target, 1);
           rows = rows.concat(thisRecipe);
       }
