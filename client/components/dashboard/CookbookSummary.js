@@ -16,6 +16,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Grid from '@material-ui/core/Grid';
 
 const styles = {
     card: {
@@ -50,6 +51,10 @@ const buttonStyleAnd = {
     borderRadius:'25px'
 };
 
+const gridStyle = {
+    marginTop:'100px',
+    marginLeft:'30px'
+}
 
 const clearFridgeStyle = {
 
@@ -57,7 +62,10 @@ const clearFridgeStyle = {
     border: 'None',
     color: 'White',
     fontSize: '80 px',
-    borderRadius:'5px'
+    borderRadius:'5px',
+    marginLeft:'10px',
+    marginTop:'20px',
+    marginBottom:'10px'
 };
 
 
@@ -120,7 +128,7 @@ class CookbookSummary extends Component {
         let factsTable = <Table>
             <TableHead>
               <TableRow>
-                <TableCell align="right">average Calories</TableCell>
+                <TableCell align="right">average calories</TableCell>
                 <TableCell align="right">average protein</TableCell>
                 <TableCell align="right">average sugar</TableCell>
                 <TableCell align="right">average sodium</TableCell>
@@ -152,19 +160,23 @@ class CookbookSummary extends Component {
         </CardActions>);
 
 return (
-
-            <div style={getStyle(this.props.ingredient)}>
-                <Card>
-
-                    <CardContent>
-                        {factsTable}
+            <Grid container spacing={24} style={gridStyle}>
+                <Grid item xs={7}>
                     
-                        
-                    </CardContent>
+                        <Card>
+
+                            <CardContent>
+                                {factsTable}
+                            
+                                
+                            </CardContent>
+                            
+                            {actions}
+                        </Card>
                     
-                    {actions}
-                </Card>
-            </div>
+                </Grid>
+            </Grid>
+            
 
 
         );
