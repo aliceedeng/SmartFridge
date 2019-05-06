@@ -35,6 +35,11 @@ const styles = {
     },
 };
 
+const gridStyle = {
+    marginTop:'100px',
+    marginLeft:'20px'
+}
+
 const buttonStyle = {
     backgroundColor: '#f4bf42',
     border: 'None',
@@ -51,10 +56,7 @@ const buttonStyleAnd = {
     borderRadius:'25px'
 };
 
-const gridStyle = {
-    marginTop:'100px',
-    marginLeft:'30px'
-}
+
 
 const clearFridgeStyle = {
 
