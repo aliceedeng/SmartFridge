@@ -1,7 +1,10 @@
 import Fuse from 'fuse.js';
 
+const fuzzysort = require('fuzzysort');
 const recipe = require('../db/recipe.js');
 const ingredient  = require('../db/ingredient.js');
+
+var allRecipeNames;
 
 const fuseOptions = {
     shouldSort: true,
@@ -16,9 +19,8 @@ const fuseOptions = {
         'Title'
     ]
 };
-const fuzzy = false;
-const getAll = false;
-
+const fuzzy = true;
+const getAll = true;
 
 const factUtils = require('../utils/factUtils.js');
 
@@ -38,7 +40,7 @@ export async function getById(req, res, next) {
         res.status(404).end();
     }
     else {
-      res.status(200).json(output);
+        res.status(200).json(output);
     }
   } catch (err) {
     next(err);
@@ -49,24 +51,36 @@ export async function getById(req, res, next) {
 // SHOULD BE CONVERTED TO FUZZY MATCHING
 export async function getByName(req, res, next) {
   try {
+    // IMPLEMENTATION WITH fuzzysort
     let name = req.params.name;
-    // const len = parseInt(req.query.len);
-    const len = 10;
-    name = name.toLowerCase();
-    let rows = [];
-    if (getAll) {
-        rows = await recipe.getAll();
-    } else {
-        rows = await recipe.getByName(name, len);
-    }
+    console.log(name);
+    var rows = [];
     if (fuzzy) {
-        const fuseObj = new Fuse(rows, fuseOptions);
-        rows = fuseObj.search(name);
-    }
-    if (rows.length > len) {
-        rows = rows.slice(0, len);
-    }
+      if (!allRecipeNames) {
+        // we store this to make it more efficient for future queries
+          allRecipeNames = await recipe.getAllRecipeNames();
+          allRecipeNames = {}
+      }
+      // console.log('done');
+      // console.log(allRecipeNames[0]);
 
+      const options = {
+        keys: ['TITLE'],
+        limit: 20, // TODO
+        threshold: -10000
+      }
+      const desiredTitles = fuzzysort.go(name, allRecipeNames, options);
+
+      // console.log(desiredTitles);
+      var arrayLength = desiredTitles.length;
+      for (var i = 0; i < arrayLength; i++) {
+          // console.log(desiredTitles[i][0].target);
+          const thisRecipe = await recipe.getByName(desiredTitles[i][0].target, 1);
+          rows = rows.concat(thisRecipe);
+      }
+    } else {
+      rows = await recipe.getByName(name, 20);
+    }
     if (req.params.name) {
       if (rows.length === 1) {
           res.status(200).json(rows[0]);

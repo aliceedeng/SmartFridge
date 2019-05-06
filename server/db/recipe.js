@@ -43,6 +43,13 @@ async function getAll() {
   return result.rows;
 }
 
+async function getAllRecipeNames() {
+  let query = `SELECT DISTINCT TRIM(Title) AS Title FROM RECIPES`;
+  const result = await database.simpleExecute(query, {});
+  return result.rows;
+}
+
+
 const wrapRecipeQueryWithImages =function(subquery) {
     let query = `SELECT Q.TITLE AS TITLE, Q.RID AS RID, Z.LINK AS PICTURE_LINK FROM `;
     let subqueryWrapped = `(` + subquery + `) Q`;
@@ -167,8 +174,7 @@ async function getLowSugar(name, count) {
   return result.rows;
 }
 
-
-
+// TODO
 async function getRandom() {
   var query = `SELECT * FROM RECIPES WHERE ROWNUM = 1`;
 
@@ -187,3 +193,4 @@ module.exports.getLowSugar = getLowSugar;
 module.exports.getRandom = getRandom;
 module.exports.getMostRelevantByIngredients = getMostRelevantByIngredients;
 module.exports.getAll = getAll;
+module.exports.getAllRecipeNames = getAllRecipeNames;
