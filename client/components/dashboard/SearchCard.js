@@ -175,9 +175,7 @@ class SearchCard extends Component {
             </CardActions>);
     } else {
     	description = <span/>;
-        fridge = <span/>;
-        actions = (<CardActions className={'actions'}>
-                <Select
+        fridge = <span>filter search:  <Select
                     value={this.props.searchFilter}
                     onChange={(e) => this.props.updateSearchFilter(e.target.value)}
                     displayEmpty
@@ -188,7 +186,9 @@ class SearchCard extends Component {
                 <MenuItem value={CHOLESTEROL_FILTER}>low cholesterol</MenuItem>
                 <MenuItem value={SODIUM_FILTER}>low sodium</MenuItem>
                     <MenuItem value={CALORIES_FILTER}>low calories</MenuItem>
-            </Select>
+            </Select></span>;
+        actions = (<CardActions className={'actions'}>
+                
                 <button style={buttonStyle} onClick={(e) => this.props.handleRandom()}>surprise me</button>
                   </CardActions>);
     }
