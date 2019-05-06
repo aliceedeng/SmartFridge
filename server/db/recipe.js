@@ -7,6 +7,13 @@ const baseQuery =
   WHERE RID = 'rmK12Uau.ntP510KeImX506H6Mr6jTu' OR RID = '5ZpZE8hSVdPk2ZXo1mZTyoPWJRSCPSm'
   `;
 
+
+  String.prototype.replaceAll = function(search, replacement) {
+      var target = this;
+      return target.replace(new RegExp(search, 'g'), replacement);
+  };
+
+
 /*
  * Get instructions associated with a given recipe rid
  * REQUIRES update for long form instructions--questions to answer
@@ -65,11 +72,11 @@ const wrapRecipeQueryWithImages =function(subquery) {
 //   ` AND ROWNUM <= ` + count;
 //   SELECT Title, RID, PICTURE_LINK FROM RECIPES WHERE Title LIKE 'Chocolate%' AND ROWNUM <= 20
 async function getByName(name, count) {
-    let fixName = name.replace(`'`, `''`);
+    let fixName = name.replaceAll(`'`, `''`);
     let subquery = `SELECT Title, RID FROM RECIPES WHERE Title LIKE '` + fixName + `%'` +
     ` AND ROWNUM <= ` + count;
     let query = wrapRecipeQueryWithImages(subquery);
-    console.log(query);
+    // console.log(query);
     const result = await database.simpleExecute(query, {});
 
     return result.rows;
@@ -95,7 +102,7 @@ async function getByIngredientsAnd(id) {
     let outerSubquery = `SELECT R.RID, R.TITLE, R.PICTURE_LINK FROM RECIPES R WHERE R.RID IN (` + subquery + `)`;
     let query = wrapRecipeQueryWithImages(outerSubquery);
     const result = await database.simpleExecute(query, {});
-    console.log(query);
+    // console.log(query);
 
     return result.rows;
 }
@@ -118,7 +125,7 @@ async function getMostRelevantByIngredients(id) {
     `FROM INGREDIENTS I NATURAL JOIN RECIPES R ` +
     `WHERE I.USDA_ID IN` + idString + ' GROUP BY RID, R.TITLE, R.PICTURE_LINK ORDER BY COUNT DESC) P WHERE ROWNUM <=50';
     let query = wrapRecipeQueryWithImages(subquery);
-    console.log(query);
+    // console.log(query);
     const result = await database.simpleExecute(query, {});
 
     return result.rows;
@@ -139,7 +146,8 @@ async function getByIngredientsOr(id) {
 
 // gets recipes with at least one ingredient with high level of protein
 async function getExtremeNutrient(name, count, nutrient, amount, direction) {
-  let fixName = name.replace(`'`, `''`);
+  let fixName = name.replaceAll(`'`, `''`);
+  // console.log(fixName);
   let subquery = `SELECT Title, RID FROM
                   (SELECT DISTINCT Title, RID
                   FROM RECIPES r
@@ -153,7 +161,7 @@ async function getExtremeNutrient(name, count, nutrient, amount, direction) {
                    (order by PROTEIN) FROM USDA))
                   AND Title LIKE '` + fixName + `%')
                   WHERE ROWNUM <= ` + count;
-  console.log(subquery);
+  // console.log(subquery);
   let query = wrapRecipeQueryWithImages(subquery);
   const result = await database.simpleExecute(query, {});
 
@@ -183,7 +191,7 @@ async function getRandom() {
   let subquery = `SELECT RID, TITLE FROM   (SELECT RID, TITLE FROM recipes ORDER BY DBMS_RANDOM.VALUE)
     WHERE  rownum < 51`;
   let query = wrapRecipeQueryWithImages(subquery);
-  console.log(query);
+  // console.log(query);
   const result = await database.simpleExecute(query, {});
 
 return result.rows;
