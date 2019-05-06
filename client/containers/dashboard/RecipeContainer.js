@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-
-
+import { connect } from 'react-redux';
+import {PROTEIN_FILTER,
+        CALORIES_FILTER,
+        SODIUM_FILTER,
+        CHOLESTEROL_FILTER,
+        SUGAR_FILTER} from '../../constants/searchFilters';
 // Import custom components
 import SearchCard from '../../components/dashboard/SearchCard';
 import CardList from '../../components/dashboard/CardList';
@@ -46,16 +50,22 @@ class RecipeDashboard extends Component {
         super(props);
         this.storeText = this.storeText.bind(this);
         this.getText = this.getText.bind(this);
+        this.handleRandom = this.handleRandom.bind(this);
         this.searchText = '';
-        this.searchFilter = 'NONE';
-        this.updateSearchFilter = this.updateSearchFilter.bind(this);
-        // this.recipes = new Array(10);
         this.state = { recipes: [], hasRecipes: false };
     }
 
-    updateSearchFilter(newFilter) {
-      console.log(this.searchFilter);
-      this.searchFilter = newFilter;
+    componentDidMount() {
+        this.handleRandom();
+    }
+
+    // populates the list of recipes with a random set of recipes
+    handleRandom() {
+        const request = '/api/recipe/random';
+        axios.get(request)
+            .then(res => {
+                this.setState({recipes:res.data, hasRecipes: true});
+            });
     }
 
     // Updates search text based on latest user action
@@ -72,13 +82,19 @@ class RecipeDashboard extends Component {
             const length = 20;
             // add additional filtering
             var request = ''
-            console.log(this.searchFilter);
-            if (this.searchFilter == 'PROTEIN')
+            if (this.props.searchFilter === PROTEIN_FILTER) {
                 request = '/api/recipe/protein/' + recipe + '?len=' + length;
-            else if (this.searchFilter == 'SUGAR')
+            } else if (this.props.searchFilter === SUGAR_FILTER) {
                 request = '/api/recipe/sugar/' + recipe + '?len=' + length;
-            else // TODO
+            } else if (this.props.searchFilter === CHOLESTEROL_FILTER) {
+                request = '/api/recipe/cholesterol/' + recipe + '?len=' + length;
+            } else if (this.props.searchFilter === SODIUM_FILTER) {
+                request = '/api/recipe/sodium/' + recipe + '?len=' + length;
+            } else if (this.props.searchFilter === CALORIES_FILTER) {
+                request = '/api/recipe/calories/' + recipe + '?len=' + length;
+            } else {
                 request = '/api/recipe/name/' + recipe + '?len=' + length;
+            }
             console.log(request);
             axios.get(request)
                 .then(res => {
@@ -90,7 +106,10 @@ class RecipeDashboard extends Component {
 
     render() {
         let display;
-        display = <SearchCard storeText={this.storeText} getText={this.getText} ingredient={false} updateSearchFilter={this.updateSearchFilter}/>;
+        display = <SearchCard storeText={this.storeText}
+                              getText={this.getText}
+                              handleRandom={this.handleRandom}
+                              ingredient={false} />;
 
         let recipeCards;
         if (this.state.hasRecipes) {
@@ -120,4 +139,10 @@ return (
 
 }
 
-export default RecipeDashboard;
+function mapStateToProps(state) {
+    return {
+        searchFilter: state.cookbook.searchFilter
+    };
+}
+
+export default connect(mapStateToProps)(RecipeDashboard);

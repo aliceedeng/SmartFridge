@@ -28,8 +28,17 @@ router.route('/exclude')
 router.route('/protein/:name')
   .get(recipes.getHighProtein);
 
+router.route('/cholesterol/:name')
+    .get(recipes.getLowCholesterol);
+
 router.route('/sugar/:name')
   .get(recipes.getLowSugar);
+
+router.route('/calories/:name')
+    .get(recipes.getLowCalories);
+
+router.route('/sodium/:name')
+    .get(recipes.getLowSodium);
 
 router.route('/random/')
   .get(recipes.getRandom);

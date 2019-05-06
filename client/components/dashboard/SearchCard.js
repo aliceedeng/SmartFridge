@@ -7,9 +7,14 @@ import {bindActionCreators} from 'redux';
 import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
 import {clearFridge, removeIngredient, updateSearchType} from '../../actions/ingredientAction';
-import {CancelTwoTone} from '@material-ui/icons';
-import IconButton from '@material-ui/core/IconButton'
-import Button from '@material-ui/core/Button';
+import {updateSearchFilter} from '../../actions/recipeAction';
+import {
+    PROTEIN_FILTER,
+    CALORIES_FILTER,
+    SODIUM_FILTER,
+    CHOLESTEROL_FILTER,
+    SUGAR_FILTER, NONE_FILTER
+} from '../../constants/searchFilters';
 import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
@@ -89,7 +94,8 @@ function mapStateToProps(state) {
     return(
         {
             fridgeContents: state.fridge.contents,
-            searchType: state.fridge.searchType
+            searchType: state.fridge.searchType,
+            searchFilter: state.cookbook.searchFilter
         }
     );
 }
@@ -99,6 +105,7 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         clearFridge: clearFridge,
         updateSearchType: updateSearchType,
+        updateSearchFilter: updateSearchFilter,
         removeIngredient: removeIngredient
     }, dispatch);
 }
@@ -120,8 +127,7 @@ class SearchCard extends Component {
 
   render() {
     const storeText = this.props.storeText;
-    const getText = this.props.getText;
-    const updateSearchFilter = this.props.updateSearchFilter;
+    const getText = this.props.getText
     let fridge;
     let actions;
     let description;
@@ -169,12 +175,21 @@ class SearchCard extends Component {
             </CardActions>);
     } else {
     	description = <span/>;
-        fridge = <span/>;
+        fridge = <span>filter search:  <Select
+                    value={this.props.searchFilter}
+                    onChange={(e) => this.props.updateSearchFilter(e.target.value)}
+                    displayEmpty
+                >
+                <MenuItem value={NONE_FILTER}><em>no filter</em></MenuItem>
+                <MenuItem value={PROTEIN_FILTER}>high protein</MenuItem>
+                <MenuItem value={SUGAR_FILTER}>low sugar</MenuItem>
+                <MenuItem value={CHOLESTEROL_FILTER}>low cholesterol</MenuItem>
+                <MenuItem value={SODIUM_FILTER}>low sodium</MenuItem>
+                    <MenuItem value={CALORIES_FILTER}>low calories</MenuItem>
+            </Select></span>;
         actions = (<CardActions className={'actions'}>
-                    <h4>Filters</h4>
-                  	<button style={buttonStyle} onClick={() => updateSearchFilter('NONE')}>clear filters</button>
-                    <button style={buttonStyle} onClick={() => updateSearchFilter('PROTEIN')}>high protein</button>
-                    <button style={buttonStyle} onClick={() => updateSearchFilter('SUGAR')}>low sugar</button>
+                
+                <button style={buttonStyle} onClick={(e) => this.props.handleRandom()}>surprise me</button>
                   </CardActions>);
     }
 return (
