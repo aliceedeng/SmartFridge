@@ -33,6 +33,23 @@ async function find(context) {
   return result.rows;
 }
 
+/*
+ * Gets all recipes (names and ids) from recipe
+ */
+async function getAll() {
+  let query = `SELECT Title, RID FROM RECIPES`;
+  const result = await database.simpleExecute(query, {});
+
+  return result.rows;
+}
+
+async function getAllRecipeNames() {
+  let query = `SELECT DISTINCT TRIM(Title) AS Title FROM RECIPES`;
+  const result = await database.simpleExecute(query, {});
+  return result.rows;
+}
+
+
 const wrapRecipeQueryWithImages =function(subquery) {
     let query = `SELECT Q.TITLE AS TITLE, Q.RID AS RID, Z.LINK AS PICTURE_LINK FROM `;
     let subqueryWrapped = `(` + subquery + `) Q`;
@@ -40,8 +57,8 @@ const wrapRecipeQueryWithImages =function(subquery) {
     query = query + ` LEFT JOIN IMAGES Z ON Z.RID = Q.RID`;
 
     return query;
-
 }
+
 // original query: let query = `SELECT Title, dbms_lob.substr(INSTRUCTIONS,2000,1),` +
 //   `dbms_lob.substr(INSTRUCTIONS,2000,2001) FROM RECIPES WHERE Title LIKE '` + name + `%'` +
 //   ` AND ROWNUM <= ` + count;
@@ -129,12 +146,12 @@ async function getExtremeNutrient(name, count, nutrient, amount, direction) {
                   WHERE RID IN
                   (SELECT RID FROM INGREDIENTS i
                   NATURAL JOIN
-                  (SELECT USDA_ID, ` + nutrient + ` 
+                  (SELECT USDA_ID, ` + nutrient + `
                   FROM USDA) u
-                  WHERE u.` + nutrient + ` ` + direction + `  
+                  WHERE u.` + nutrient + ` ` + direction + `
                   (SELECT PERCENTILE_CONT(` + amount + `) WITHIN GROUP
                    (order by PROTEIN) FROM USDA))
-                  AND Title LIKE '` + fixName + `%') 
+                  AND Title LIKE '` + fixName + `%')
                   WHERE ROWNUM <= ` + count;
   console.log(subquery);
   let query = wrapRecipeQueryWithImages(subquery);
@@ -181,3 +198,5 @@ module.exports.getExtremeNutrient = getExtremeNutrient;
 module.exports.getLowSugar = getLowSugar;
 module.exports.getRandom = getRandom;
 module.exports.getMostRelevantByIngredients = getMostRelevantByIngredients;
+module.exports.getAll = getAll;
+module.exports.getAllRecipeNames = getAllRecipeNames;

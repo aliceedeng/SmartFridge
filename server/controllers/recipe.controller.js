@@ -1,6 +1,14 @@
+const fuzzysort = require('fuzzysort');
 const recipe = require('../db/recipe.js');
 const ingredient  = require('../db/ingredient.js');
+
+var allRecipeNames;
+
+const fuzzy = true;
+
 const factUtils = require('../utils/factUtils.js');
+
+// ALL SHOULD BE UPDATED TO HAVE CONSISTENT EMPTY RETURN BEHAVIOR
 
 // returns an object representing recipe contents associated with a specific RID
 // SHOULD BE UPDATED TO RETURN USDA_IDs associated with each ingredient for fridge matching
@@ -16,7 +24,7 @@ export async function getById(req, res, next) {
         res.status(404).end();
     }
     else {
-      res.status(200).json(output);
+        res.status(200).json(output);
     }
   } catch (err) {
     next(err);
@@ -27,15 +35,39 @@ export async function getById(req, res, next) {
 // SHOULD BE CONVERTED TO FUZZY MATCHING
 export async function getByName(req, res, next) {
   try {
-    if (req.params.name && req.query.len) {
-        const len = parseInt(req.query.len);
-        const name = req.params.name;
-        const rows = await recipe.getByName(name, len);
-        res.status(200).json(rows);
+    // IMPLEMENTATION WITH fuzzysort
+    let name = req.params.name;
+    console.log(name);
+    var rows = [];
+    if (fuzzy) {
+      if (!allRecipeNames) {
+          // we store this to make it more efficient for future queries
+          allRecipeNames = await recipe.getAllRecipeNames();
+      }
+
+      const options = {
+        keys: ['TITLE'],
+        limit: 20, // TODO
+        threshold: -10000
+      }
+      const desiredTitles = fuzzysort.go(name, allRecipeNames, options);
+
+      var arrayLength = desiredTitles.length;
+      for (var i = 0; i < arrayLength; i++) {
+          const thisRecipe = await recipe.getByName(desiredTitles[i][0].target, 1);
+          rows = rows.concat(thisRecipe);
+      }
+    } else {
+      rows = await recipe.getByName(name, 20);
+    }
+    if (req.params.name) {
+      if (rows.length === 1) {
+          res.status(200).json(rows[0]);
+      }
+      res.status(200).json(rows);
     } else {
       res.status(404).end();
     }
-
   } catch (err) {
     next(err);
   }
